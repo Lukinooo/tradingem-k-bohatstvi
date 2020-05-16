@@ -1,10 +1,10 @@
 <template>
   <q-page class="flex flex-center">
+    
     <div>
-      Home menu page
+      Leaderboards of players in game
     </div>
   </q-page>
-  
 </template>
 
 <script>

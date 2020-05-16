@@ -1,8 +1,9 @@
 <template>
   <q-page class="flex flex-center">
+    
     <div>
-      Home menu page
-    </div>
+      Join game page
+    </div> >
   </q-page>
   
 </template>
