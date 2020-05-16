@@ -10,13 +10,13 @@ import javax.ws.rs.core.MediaType;
 @Path("/hello")
 public class ExampleResource {
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public String hello() {
-        Jedis jedis = new Jedis("localhost", 6379);
-        jedis.set("foo", "barbie");
-        String value = jedis.get("foo");
-
-        return "hello" + " " + value;
-    }
+//    @GET
+//    @Produces(MediaType.TEXT_PLAIN)
+//    public String hello() {
+//        Jedis jedis = new Jedis("localhost", 6379);
+//        jedis.set("foo", "barbie");
+//        String value = jedis.get("foo");
+//
+//        return "hello" + " " + value;
+//    }
 }

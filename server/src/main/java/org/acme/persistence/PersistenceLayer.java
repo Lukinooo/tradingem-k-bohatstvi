@@ -1,18 +1,22 @@
 package org.acme.persistence;
 
-import javax.transaction.Transactional;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import java.util.List;
 
 public interface PersistenceLayer {
+    @Inject
+    EntityManager em = null;
 
-    @Transactional
     public Object get(Long id);
 
-    @Transactional
     public Long create(Object object);
 
-    @Transactional
     public Long delete(Object object);
 
-    @Transactional
     public Long update(Object object);
+
+    public List<Object> getAll();
+
+    // TODO implement all generic methods for persist Matej
 }
