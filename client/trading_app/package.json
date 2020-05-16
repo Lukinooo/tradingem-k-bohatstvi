@@ -13,7 +13,8 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
-    "easeljs": "^1.0.2",
+    "createjs": "^1.0.1",
+    "createjs-module": "^0.8.3",
     "quasar": "^1.0.0"
   },
   "devDependencies": {
