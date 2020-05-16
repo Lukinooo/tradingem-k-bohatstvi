@@ -14,7 +14,10 @@ public class Game {
     private Float longitude_center;
     private Float latitude_center;
     private Float radius;
-    private Float max_player;
+    private int max_player;
+    private int max_shops;
+    private int max_products;
+    private String color;
 
     @OneToMany(mappedBy = "game")
     private List<Shop> shops;
@@ -60,11 +63,51 @@ public class Game {
         this.radius = radius;
     }
 
-    public Float getMax_player() {
+    public int getMax_player() {
         return max_player;
     }
 
-    public void setMax_player(Float max_player) {
+    public void setMax_player(int max_player) {
         this.max_player = max_player;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMax_shops() {
+        return max_shops;
+    }
+
+    public void setMax_shops(int max_shops) {
+        this.max_shops = max_shops;
+    }
+
+    public int getMax_products() {
+        return max_products;
+    }
+
+    public void setMax_products(int max_products) {
+        this.max_products = max_products;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public List<Shop> getShops() {
+        return shops;
+    }
+
+    public void setShops(List<Shop> shops) {
+        this.shops = shops;
     }
 }

@@ -1,0 +1,7 @@
+{
+  "color": "green",
+  "players": 10,
+  "shops": 5,
+  "radius": 10,
+  "products": 30
+}

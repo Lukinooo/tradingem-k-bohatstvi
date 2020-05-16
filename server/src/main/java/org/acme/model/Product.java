@@ -15,4 +15,35 @@ public class Product {
     @JoinColumn(name = "price_category_id", nullable= false)
     private PriceCategory priceCategory;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
+
+    public PriceCategory getPriceCategory() {
+        return priceCategory;
+    }
+
+    public void setPriceCategory(PriceCategory priceCategory) {
+        this.priceCategory = priceCategory;
+    }
 }

@@ -33,5 +33,20 @@ public class Shop {
         this.name = name;
     }
 
+    public Integer getNum_products() {
+        return num_products;
+    }
+
+    public void setNum_products(Integer num_products) {
+        this.num_products = num_products;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
 }
 
