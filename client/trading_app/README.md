@@ -20,3 +20,8 @@ quasar build
 
 ### Customize the configuration
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+
+### To install Capacitor
+
+See [Capacitor Apps - Preparation](https://quasar.dev/quasar-cli/developing-capacitor-apps/preparation).
+Preferably, go through next steps also...

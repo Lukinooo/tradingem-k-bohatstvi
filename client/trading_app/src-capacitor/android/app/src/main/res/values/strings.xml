@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Tradingem K Bohatstvi</string>
+    <string name="title_activity_main">Tradingem K Bohatstvi</string>
+    <string name="package_name">org.mlm.trading_app</string>
+    <string name="custom_url_scheme">org.mlm.trading_app</string>
+</resources>

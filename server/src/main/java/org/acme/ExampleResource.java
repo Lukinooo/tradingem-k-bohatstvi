@@ -1,5 +1,7 @@
 package org.acme;
 
+import redis.clients.jedis.Jedis;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -11,6 +13,10 @@ public class ExampleResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
-        return "hello";
+        Jedis jedis = new Jedis("localhost", 6379);
+        jedis.set("foo", "barbie");
+        String value = jedis.get("foo");
+
+        return "hello" + " " + value;
     }
 }

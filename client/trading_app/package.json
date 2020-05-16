@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A Quasar Framework app",
   "productName": "Tradingem K Bohatstvi",
-  "cordovaId": "org.mlm.trading-app",
+  "cordovaId": "org.mlm.trading_app",
   "capacitorId": "",
   "author": "MLM",
   "private": true,
