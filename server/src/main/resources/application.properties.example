@@ -9,3 +9,9 @@ quarkus.datasource.jdbc.url = jdbc:postgresql://localhost:5432/trading_db
 
 # drop and create the database at startup (use `update` to only update the schema)
 quarkus.hibernate-orm.database.generation=update
+
+game.color = Green
+game.players = 10
+game.shops = 5
+game.radius = 10
+game.products = 30

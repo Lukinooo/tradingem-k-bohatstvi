@@ -36,5 +36,4 @@ release.properties
 
 node-modules
 
-application.properties
-!application.properties.example
+/src/main/resources/application.properties

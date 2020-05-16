@@ -1,14 +1,14 @@
-package org.acme.model;
+package org.acme.models;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "GAMES")
-public class Game {
+public class Game implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="gameSeq")
+    @GeneratedValue
     private Long id;
     private String name;
     private Float longitude_center;
@@ -19,7 +19,7 @@ public class Game {
     private int max_products;
     private String color;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(targetEntity=Shop.class, mappedBy="games", fetch=FetchType.EAGER)
     private List<Shop> shops;
 
 

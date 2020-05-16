@@ -1,4 +1,4 @@
-package org.acme.model;
+package org.acme.models;
 
 import javax.persistence.*;
 
@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "PRICE_CATEGORIES")
 public class PriceCategory {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="priceCategorySeq")
+    @GeneratedValue
     private Long id;
     private Integer level;
     private float min_price;

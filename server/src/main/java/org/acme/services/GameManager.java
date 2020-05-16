@@ -1,46 +1,44 @@
 package org.acme.services;
 
-import org.acme.model.Game;
-import redis.clients.jedis.Jedis;
+import org.acme.configs.GameConfig;
+import org.acme.models.Game;
+import org.acme.persistence.GamePersist;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.io.File;
-import java.nio.file.Paths;
 
 @Path("/create-game")
 public class GameManager {
+    @Inject
+    EntityManager em;
+    @Inject
+    GameConfig gameConfig;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
+    @Transactional
     public String getConfig() {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Path currentPath = (Path) Paths.get(System.getProperty("user.dir"));
-//        Path filePath = (Path) Paths.get(currentPath.toString(), "data", "GameConfig.json");
-        return currentPath.toString();
+        GamePersist gamePersist = new GamePersist(em);
+        Game game = new Game();
+        game.setColor(gameConfig.color);
+        game.setMax_player(gameConfig.players);
+        game.setMax_products(gameConfig.products);
+        game.setMax_shops(gameConfig.shops);
+        game.setRadius(gameConfig.radius);
+        Long id = gamePersist.create(game);
+        System.out.println("Color id " + id);
+        game.setColor("Blue");
+        gamePersist.update(game);
 
-//        JSONParser parser = new JSONParser();
-//        try {
-//            Object obj = parser.parse(new FileReader("..//GameConfig.json"));
-//
-//            // A JSON object. Key value pairs are unordered. JSONObject supports java.util.Map interface.
-//            JSONObject jsonObject = (JSONObject) obj;
-//
-//            // A JSON array. JSONObject supports java.util.List interface.
-//            JSONArray companyList = (JSONArray) jsonObject.get("Company List");
-//
-//            // An iterator over a collection. Iterator takes the place of Enumeration in the Java Collections Framework.
-//            // Iterators differ from enumerations in two ways:
-//            // 1. Iterators allow the caller to remove elements from the underlying collection during the iteration with well-defined semantics.
-//            // 2. Method names have been improved.
-//            Iterator<JSONObject> iterator = companyList.iterator();
-//            while (iterator.hasNext()) {
-//                System.out.println(iterator.next());
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        Game getGame = (Game) gamePersist.get(game.getId());
+        System.out.println("Color by get " + getGame.getColor());
+        gamePersist.delete(getGame);
+//        em.persist(game);
+        return game.getColor() + game.getMax_player();
     }
 }

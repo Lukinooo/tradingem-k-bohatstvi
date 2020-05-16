@@ -1,22 +1,20 @@
-package org.acme.model;
+package org.acme.models;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "SHOPS")
 public class Shop {
+    @Id
+    @GeneratedValue
     private Long id;
     private String name;
     private Integer num_products;
 
     @ManyToOne
     @JoinColumn(name="game_id", nullable=false)
-    private Game game;
+    private Game games;
 
-
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="shopSeq")
     public Long getId() {
         return id;
     }
@@ -42,11 +40,11 @@ public class Shop {
     }
 
     public Game getGame() {
-        return game;
+        return games;
     }
 
     public void setGame(Game game) {
-        this.game = game;
+        this.games = game;
     }
 }
 

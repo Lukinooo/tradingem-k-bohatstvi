@@ -1,4 +1,4 @@
-package org.acme.model;
+package org.acme.models;
 
 import javax.persistence.*;
 
@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "PLAYERS")
 public class Player {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="playerSeq")
+    @GeneratedValue
     private Long id;
     private String name;
 
