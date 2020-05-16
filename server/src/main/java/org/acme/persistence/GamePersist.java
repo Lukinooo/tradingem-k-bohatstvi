@@ -5,6 +5,7 @@ import org.acme.models.Game;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.List;
 
 public class GamePersist implements PersistenceLayer{
     @Inject
@@ -15,13 +16,11 @@ public class GamePersist implements PersistenceLayer{
     }
 
     @Override
-    @Transactional
     public Object get(Long id) {
         return em.find(Game.class, id);
     }
 
     @Override
-    @Transactional
     public Long create(Object object) {
         Game game = (Game) object;
         System.out.println(game.getColor());
@@ -30,7 +29,6 @@ public class GamePersist implements PersistenceLayer{
     }
 
     @Override
-    @Transactional
     public Long delete(Object object) {
         Game game = (Game) object;
         em.remove(game);
@@ -38,11 +36,13 @@ public class GamePersist implements PersistenceLayer{
     }
 
     @Override
-    @Transactional
     public Long update(Object object) {
         Game game = (Game) object;
         em.merge(game);
         return game.getId();
     }
 
+    @Override
+    public List<Object> getAll()
+    {return null;}
 }
