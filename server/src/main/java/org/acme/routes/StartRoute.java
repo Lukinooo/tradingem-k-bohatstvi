@@ -1,6 +1,7 @@
 package org.acme.routes;
 
 import io.vertx.core.http.HttpServerRequest;
+import org.acme.configs.GameConfig;
 import org.acme.services.GameManager;
 import org.codehaus.jackson.map.ObjectMapper;
 import javax.inject.Inject;
@@ -18,7 +19,8 @@ import java.util.List;
 
 @Path("/")
 public class StartRoute {
-
+    @Inject
+    GameConfig gameConfig;
     @Inject
     EntityManager em;
     public static ObjectMapper mapper = new ObjectMapper();
@@ -32,7 +34,7 @@ public class StartRoute {
     public String createNewGame() {
         GameManager gameManager = new GameManager(em);
 
-        int maxPlayer = Integer.parseInt(request.getParam("max_player"));
+        int maxPlayer = Integer.parseInt(request.getParam("max_players"));
         int maxShops = Integer.parseInt(request.getParam("max_shops"));
         int maxProducts = Integer.parseInt(request.getParam("max_products"));
 
@@ -60,7 +62,11 @@ public class StartRoute {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("join-game")
     @Transactional
-    public String joinPlayerIntoGame(String gameName, String playerName) {
+    public String joinPlayerIntoGame() {
+        String playerName = request.getParam("player_name");
+        String gameName = request.getParam("game_name");
+        System.out.println(playerName + gameName);
+
         GameManager gameManager = new GameManager(em);
         return gameManager.addPlayer(gameName, playerName);
     }
@@ -87,8 +93,15 @@ public class StartRoute {
     @Path("game-setting")
     @Transactional
     public String getGameSettings() {
-        GameManager gameManager = new GameManager(em);
-        return gameManager.gameSetting();
+        StringBuilder config_value = new StringBuilder();
+        config_value.append("{\n")
+                .append("color: ").append(gameConfig.color).append(",\n")
+                .append("max_players: ").append(gameConfig.players).append(",\n")
+                .append("max_shops: ").append(gameConfig.shops).append(",\n")
+                .append("max_products: ").append(gameConfig.products).append(",\n")
+                .append("radius: ").append(gameConfig.radius).append("\n}");
+
+        return config_value.toString();
     }
 }
 

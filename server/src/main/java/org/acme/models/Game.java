@@ -18,10 +18,18 @@ public class Game implements Serializable {
     private int max_shops;
     private int max_products;
     private String color;
+    private float player_money;
 
     @OneToMany(targetEntity=Shop.class, mappedBy="games", fetch=FetchType.EAGER)
     private List<Shop> shops;
 
+    public float getPlayerMoney() {
+        return player_money;
+    }
+
+    public void setPlayerMoney(float playerMoney) {
+        this.player_money = playerMoney;
+    }
 
     public Long getId() {
         return id;

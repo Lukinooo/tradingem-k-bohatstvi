@@ -48,42 +48,43 @@ public class ShopManager {
 
             sp.create(shop);
         }
+    }
 
-        List<Shop> shops = sp.getAllById(game);
+    public List getProducts(EntityManager em) {
+        ProductPersistence pp = new ProductPersistence(em);
+        return pp.getAll();
+    }
+
+    public List getShopProducts(Long shopId) {
+        Jedis jedis = new Jedis("localhost", 6379);
+        return jedis.lrange("obchod:" + shopId + ":produkty", 0, -1);
+    }
+
+    // TODO implement Set product price in shop by ProductId, ShopId, Price (implement Lukas)
+
+    public void initializeProducts(Game game) {
+        ShopPersist shopPersist = new ShopPersist(em);
+        List<Shop> shops = shopPersist.getAllById(game);
         List<Object> products = getProducts(em);
 
         Jedis jedis = new Jedis("localhost", 6379);
+        Random rand = new Random();
 
         for (Shop shop : shops) {
             jedis.rpush("hra:" + game.getId() + ":obchody", String.valueOf(shop.getId()));
 
             for (Object product : products) {
-                Product prod = (Product) product;
-                jedis.rpush("obchod:" + shop.getId() + ":produkty",  prod.getName() + ":" + prod.getPrice() + ":" + "10");
+                if ((rand.nextInt(100) & 1) == 1) {
+                    Product prod = (Product) product;
+                    jedis.rpush("obchod:" + shop.getId() + ":produkty", prod.getName() + ":" + prod.getPrice() + ":" + "10");
+                }
             }
 
-            System.out.println(shopProducts(shop));
+//            System.out.println(shopProducts(shop));
         }
 
-        System.out.println(jedis.lrange("hra:" + game.getId() + ":obchody", 0, -1));
-
-        System.out.println(shops);
-    }
-
-    public List getProducts(EntityManager em) {
-        ProductPersistence pp = new ProductPersistence(em);
-
-        List products = pp.getAll();
-
-        return products;
-    }
-
-    public List shopProducts(Shop shop) {
-        Jedis jedis = new Jedis("localhost", 6379);
-        return jedis.lrange("obchod:" + shop.getId() + ":produkty", 0, -1);
-    }
-
-    // TODO
-    public void initializeProducts(Game game) {
+//        System.out.println(jedis.lrange("hra:" + game.getId() + ":obchody", 0, -1));
+//
+//        System.out.println(shops);
     }
 }

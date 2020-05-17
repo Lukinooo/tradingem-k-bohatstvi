@@ -39,4 +39,7 @@ public class ExampleResource {
 
         return "hello" + " " + values;
     }
+
+    // TODO add application logging
+    // TODO add multiple languages
 }
