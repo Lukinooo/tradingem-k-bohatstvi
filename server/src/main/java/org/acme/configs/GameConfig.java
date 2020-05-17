@@ -20,6 +20,17 @@ public class GameConfig {
     @ConfigProperty(name = "radius")
     public  Float radius;
 
+    @ConfigProperty(name = "player_money")
+    public float player_money;
+
+    public float getPlayer_money() {
+        return player_money;
+    }
+
+    public void setPlayer_money(float player_money) {
+        this.player_money = player_money;
+    }
+
     public String getColor() {
         return color;
     }

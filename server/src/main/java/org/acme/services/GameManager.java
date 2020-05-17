@@ -1,32 +1,63 @@
 package org.acme.services;
 
-import org.acme.configs.GameConfig;
+import org.acme.models.Game;
+import org.acme.models.Player;
+import org.acme.persistence.GamePersist;
 
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import java.util.List;
 
-@Path("/")
+
 public class GameManager {
-    @Inject
-    EntityManager em;
-    @Inject
-    GameConfig gameConfig;
-    // TODO vytvorit obchody ku hre Lukas
-    // TODO rozmiestnenie obchodov podla radiusu Lukas
-    // TODO inicializacia playera Lukas
-    // TODO inicializacia obchov Lukas
+    private EntityManager em;
 
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("/initialize-game")
-    @Transactional
-    public String initialize_game() {
+    public GameManager(EntityManager em) {
+        this.em = em;
+    }
 
-        return null;
+    public Game initializeGame(int maxPlayers, int maxShops, int maxProducts, String color, Float playerMoney,
+                               Float longCenter, Float latCenter, Float radius, String gameName) {
+        GamePersist gamePersist = new GamePersist(this.em);
+        ShopManager shopManager = new ShopManager(em);
+        Game game = new Game();
+
+        game.setColor(color);
+        game.setMax_player(maxPlayers);
+        game.setMax_products(maxProducts);
+        game.setMax_shops(maxShops);
+        game.setRadius(radius);
+        game.setName(gameName);
+        game.setLatitude_center(latCenter);
+        game.setLongitude_center(longCenter);
+        game.setPlayerMoney(playerMoney);
+        gamePersist.create(game);
+
+        shopManager.initializeShops(game);
+        shopManager.initializeProducts(game);
+        return game;
+    }
+
+    public String addPlayer(String gameName, String playerName) {
+        GamePersist gamePersist = new GamePersist(this.em);
+        Game game = (Game) gamePersist.getByName(gameName);
+
+        PlayerManager playerManager = new PlayerManager(em);
+        Player player = playerManager.initializePlayer(playerName, game.getPlayerMoney());
+
+        playerManager.addPlayerToGame(game, player);
+
+        StringBuilder result = new StringBuilder();
+        result.append("{\n\"playerId\": \"").append(player.getId()).append("\", ")
+                .append("\"gameId\": \"").append(game.getId()).append("\", ")
+                .append("\"status\": \"")
+                .append(player.getName())
+                .append("\" joined into game ")
+                .append(game.getName()).append("\n}");
+        return result.toString();
+    }
+
+    public List listGame() {
+        GamePersist gamePersist = new GamePersist(this.em);
+        return gamePersist.getAll();
     }
 }

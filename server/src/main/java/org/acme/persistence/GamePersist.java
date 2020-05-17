@@ -4,7 +4,7 @@ import org.acme.models.Game;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+import javax.persistence.Query;
 import java.util.List;
 
 public class GamePersist implements PersistenceLayer{
@@ -20,10 +20,15 @@ public class GamePersist implements PersistenceLayer{
         return em.find(Game.class, id);
     }
 
+    public Object getByName(String name) {
+        Query query = em.createQuery("SELECT g FROM Game g WHERE g.name LIKE :name");
+        query.setParameter("name", name);
+        return query.getSingleResult();
+    }
+
     @Override
     public Long create(Object object) {
         Game game = (Game) object;
-        System.out.println(game.getColor());
         em.persist(game);
         return game.getId();
     }
@@ -43,6 +48,12 @@ public class GamePersist implements PersistenceLayer{
     }
 
     @Override
-    public List<Object> getAll()
-    {return null;}
+    public List getAll() {
+        Query query = em.createQuery("SELECT g FROM Game g");
+        return query.getResultList();
+    }
+
+    // Print query
+//    org.hibernate.query.Query hq = query.unwrap(org.hibernate.query.Query.class);
+//    System.out.println(hq.getQueryString());
 }

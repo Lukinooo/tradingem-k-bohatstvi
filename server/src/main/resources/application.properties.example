@@ -15,3 +15,8 @@ game.players = 10
 game.shops = 5
 game.radius = 10
 game.products = 30
+
+game.ascent_price_coefficient = 0.1
+game.descent_price_coefficient = 0.1
+
+game.player_money = 300
