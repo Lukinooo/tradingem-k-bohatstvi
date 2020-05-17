@@ -1,8 +1,9 @@
 <template>
   <q-page class="flex flex-center">
-    <div>
-      Home menu page
-    </div>
+        <q-img
+          src="statics/motivation.jpg"
+          :ratio="1"
+        />
   </q-page>
   
 </template>

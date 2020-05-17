@@ -13,9 +13,12 @@
         />
 
         <q-toolbar>
-            <div class="text-h3 q-px-lg q-pt-xl q-mb-md">
-              Tradingem k bohatství
-            </div>
+          <q-toolbar-title>
+            Tradingem k bohatství
+          </q-toolbar-title>
+            <!-- <div class="text-h3 q-px-lg q-pt-xl q-mb-md">
+              
+            </div> -->
         </q-toolbar>
       </q-toolbar>
       <q-img src="statics/money.jpg" class="header-image absolute-top" />
@@ -24,63 +27,35 @@
  <q-drawer
         v-model="leftDrawerOpen"
         show-if-above
+        overlay
         :width="200"
         :breakpoint="400"
       >
         <q-scroll-area style="height: calc(100% - 150px); margin-top: 150px; border-right: 1px solid #ddd">
           <q-list padding>
 
-            <q-item clickable v-ripple
-            to="/"
-            >
-              
+            <q-item
+              v-for="nav in navs"
+              v-bind:key="nav"
+              :to="nav.to"
+              clickable 
+              v-ripple
+              exact>
               <q-item-section avatar>
-                <q-icon name="home" />
+                <q-icon :name="nav.icon" />
               </q-item-section>
               <q-item-section>
-                Home
-              </q-item-section>
-            </q-item>
-  
-            <q-item active clickable v-ripple
-            to="/create">
-              <q-item-section avatar>
-                <q-icon name="add" />
-              </q-item-section>
-
-              <q-item-section>
-                Create
+                <q-item-label> {{nav.label}} </q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-ripple
-            to="/join">
-              <q-item-section avatar>
-                <q-icon name="search" />
-              </q-item-section>
-
-              <q-item-section>
-                Join
-              </q-item-section>
-            </q-item>
-
-            <q-item clickable v-ripple
-            to="/game">
-              <q-item-section avatar>
-                <q-icon name="videogame_asset" />
-              </q-item-section>
-
-              <q-item-section>
-                Game
-              </q-item-section>
-            </q-item>
           </q-list>
         </q-scroll-area>
 
-        <q-img class="absolute-top" src="https://cdn.quasar.dev/img/material.png" style="height: 150px">
+        <q-img class="absolute-top" src="statics/stats.jpg" style="height: 150px">
           <div class="absolute-bottom bg-transparent">
             <q-avatar size="56px" class="q-mb-sm">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+              <img src="statics/avatar2.jpg">
             </q-avatar>
             <div class="text-weight-bold">{{nick}}</div>
           </div>
@@ -95,21 +70,42 @@
 </template>
 
 <script>
-import EssentialLink from "components/EssentialLink";
 
 export default {
   name: "MainLayout",
 
   methods: {},
 
-  components: {
-    EssentialLink
-  },
-
   data() {
     return {
       leftDrawerOpen: false,
       nick: "PU$$¥$$L4¥€R69",
+      navs : [
+        {
+          label: 'Home',
+          to: '/',
+          icon: 'home',
+          
+        },
+        {
+          label: 'Create',
+          to: '/create',
+          icon: 'add',
+          
+        },
+        {
+          label: 'Join',
+          to: '/join',
+          icon: 'search',
+          
+        },
+        {
+          label: 'Game',
+          to: '/game',
+          icon: 'videogame_asset',
+          
+        }
+      ]
     };
   }
 };

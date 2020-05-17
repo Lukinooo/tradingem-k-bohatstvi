@@ -1,17 +1,6 @@
 <template>
-  <q-page class="flex flex-center">
-    
-    <div>
-      <q-btn
-      @click="paint()"
-      >
-      Kresli!
-      </q-btn>
-      Game canvas page
-      
-        <canvas id="demoCanvas" width="500" height="300"></canvas>
-      
-    </div>
+  <q-page class = "full-width column   items-center">
+        <canvas id="map" width="500" height="500"></canvas> 
   </q-page>
   
 </template>
@@ -20,21 +9,44 @@
 
 
 <script>
+// import createjs from './node_modules/createjs/1.0.0/createjs.min.js'
+import createjs from 'createjs-module/createjs'
+
 export default {
+  
+  
   name: 'PageIndex',
+
+  beforeMount: function(){
+   
+  },
   mounted: function(){
+    // document.getElementById('map').
+    this.paint()
+    
   },
   methods : {
     paint(){
-      var stage = new createjs.Stage("demoCanvas");
-    var circle = new createjs.Shape();
-    circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-    circle.x = 100;
-    circle.y = 100;
-    stage.addChild(circle);
+    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    document.getElementById('map').width= vw;
+    document.getElementById('map').height= vh;  
+    var width = document.getElementById('map').clientWidth;
+    var height = document.getElementById('map').clientHeight;
+    var stage = new createjs.Stage("map");
+    var square = new createjs.Shape();
+    square.graphics.beginFill('Blue').drawRoundRect(-width/2, -height/2, width, height, 0);
+    square.x = width/2;
+    square.y = height/2;
+    stage.addChild(square);
     stage.update();
     },
-  }
+  },
+  data () {
+    return {
+      color: 'blue',
+    }
+  } 
 }
 </script>
 
