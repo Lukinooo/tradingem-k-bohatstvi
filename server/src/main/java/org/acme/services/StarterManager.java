@@ -12,6 +12,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 
 @Path("/")
@@ -34,14 +35,26 @@ public class StarterManager {
         game.setMax_products(gameConfig.products);
         game.setMax_shops(gameConfig.shops);
         game.setRadius(gameConfig.radius);
-        Long id = gamePersist.create(game);
-        System.out.println("Color id " + id);
-        game.setColor("Blue");
-        gamePersist.update(game);
+        game.setLatitude_center((float) 48.1344335);
+        game.setLongitude_center((float) 17.2184426);
+//        Long id = gamePersist.create(game);
+//        System.out.println("Color id " + id);
+//        game.setColor("Blue");
+//        gamePersist.update(game);
+//
+//        Game getGame = (Game) gamePersist.get(game.getId());
+//        System.out.println("Color by get " + getGame.getColor());
+////        gamePersist.delete(getGame);
+//
+//        ShopManager gm = new ShopManager();
+//        gm.initializeShops(getGame, em);
 
-        Game getGame = (Game) gamePersist.get(game.getId());
-        System.out.println("Color by get " + getGame.getColor());
-        gamePersist.delete(getGame);
+//        ShopManager gm = new ShopManager();
+//
+//        gm.getProducts(em);
+
+        PlayerManager pm = new PlayerManager();
+        pm.initializePlayer(em, "Vladko", 300);
 
         return game.getColor() + game.getMax_player();
     }
