@@ -31,14 +31,6 @@ public class Game implements Serializable {
         this.id = id;
     }
 
-    public String getname() {
-        return name;
-    }
-
-    public void setname(String name) {
-        this.name = name;
-    }
-
     public Float getLongitude_center() {
         return longitude_center;
     }
@@ -109,5 +101,21 @@ public class Game implements Serializable {
 
     public void setShops(List<Shop> shops) {
         this.shops = shops;
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", longitude_center=" + longitude_center +
+                ", latitude_center=" + latitude_center +
+                ", radius=" + radius +
+                ", max_player=" + max_player +
+                ", max_shops=" + max_shops +
+                ", max_products=" + max_products +
+                ", color='" + color + '\'' +
+                ", shops=" + shops +
+                '}';
     }
 }
