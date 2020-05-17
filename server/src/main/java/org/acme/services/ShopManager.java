@@ -12,10 +12,13 @@ import java.util.List;
 import java.util.Random;
 
 public class ShopManager {
-    // DONE ziskaj obchod s produktmi Lukas - shopProducts
-    // TODO
+    private EntityManager em;
 
-    public void initializeShops(Game game, EntityManager em) {
+    public ShopManager(EntityManager em) {
+        this.em = em;
+    }
+
+    public void initializeShops(Game game) {
         ShopPersist sp = new ShopPersist(em);
         ProductPersistence pp = new ProductPersistence(em);
 
@@ -80,4 +83,7 @@ public class ShopManager {
         return jedis.lrange("obchod:" + shop.getId() + ":produkty", 0, -1);
     }
 
+    // TODO
+    public void initializeProducts(Game game) {
+    }
 }

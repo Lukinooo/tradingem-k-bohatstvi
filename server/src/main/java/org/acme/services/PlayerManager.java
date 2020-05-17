@@ -1,5 +1,6 @@
 package org.acme.services;
 
+import org.acme.models.Game;
 import org.acme.models.Player;
 import org.acme.persistence.PlayerPersist;
 import redis.clients.jedis.Jedis;
@@ -7,11 +8,13 @@ import redis.clients.jedis.Jedis;
 import javax.persistence.EntityManager;
 
 public class PlayerManager {
+    private EntityManager em;
 
-    // TODO inicializacia playera Lukas - redis: peniaze, inicializacia pola na produkty, pripojenie na hru
-    // TODO vytvorenie playera do db Lukas
+    public PlayerManager(EntityManager em) {
+        this.em = em;
+    }
 
-    public void initializePlayer(EntityManager em, String name, int money) {
+    public Player initializePlayer(String name, float money) {
         Player player = new Player();
         player.setName(name);
 
@@ -20,7 +23,13 @@ public class PlayerManager {
 
         Jedis jedis = new Jedis("localhost", 6379);
         jedis.set("hrac:" + player.getId(), player.getName() + ":" + money);
-        System.out.println("hrac:" + player.getId());
-        System.out.println(jedis.get("hrac:" + player.getId()));
+//        System.out.println("hrac:" + player.getId());
+//        System.out.println(jedis.get("hrac:" + player.getId()));
+
+        return player;
+    }
+
+    // TODO
+    public void addPlayerToGame(Game game, Player player) {
     }
 }
