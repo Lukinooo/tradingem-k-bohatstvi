@@ -73,6 +73,7 @@ public class StarterManager {
     public Game createGame(int maxPlayers, int maxShops, int maxProducts, String color,
                            Float longCenter, Float latCenter, Float radius, String gameName) {
         Game game = new Game();
+
         game.setColor(color);
         game.setMax_player(maxPlayers);
         game.setMax_products(maxProducts);
