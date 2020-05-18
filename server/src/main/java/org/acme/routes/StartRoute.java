@@ -37,6 +37,7 @@ public class StartRoute {
         int maxPlayer = Integer.parseInt(request.getParam("max_players"));
         int maxShops = Integer.parseInt(request.getParam("max_shops"));
         int maxProducts = Integer.parseInt(request.getParam("max_products"));
+        int gameTime = Integer.parseInt(request.getParam("game_time"));
 
         String color = request.getParam("color");
         String gameName = request.getParam("game_name");
@@ -47,7 +48,7 @@ public class StartRoute {
         float latitudeCenter = Float.parseFloat(request.getParam("latitude_center"));
 
         Game game = gameManager.initializeGame(maxPlayer, maxShops, maxProducts,
-                color, playerMoney, longitudeCenter, latitudeCenter, radius, gameName);
+                color, playerMoney, longitudeCenter, latitudeCenter, radius, gameName, gameTime);
 
         String result = null;
         try {
@@ -104,12 +105,6 @@ public class StartRoute {
         return config_value.toString();
     }
 
-    // TODO return all shops by game (new route)
-    // TODO get shop by game shop
-    // TODO buy product by game product shop player (check account)
-    // TODO sell product by game product shop player (check account)
-    // TODO return all player by game (tabs) (new route)
-    // TODO add start time, end time and routes for get it (new route)
 }
 
 

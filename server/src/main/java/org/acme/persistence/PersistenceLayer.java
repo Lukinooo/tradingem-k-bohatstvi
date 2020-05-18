@@ -18,5 +18,4 @@ public interface PersistenceLayer {
 
     public List<Object> getAll();
 
-    // TODO implement all generic methods for persist Matej
 }
