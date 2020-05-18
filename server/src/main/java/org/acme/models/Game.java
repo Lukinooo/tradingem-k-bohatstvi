@@ -2,6 +2,7 @@ package org.acme.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,9 +20,35 @@ public class Game implements Serializable {
     private int max_products;
     private String color;
     private float player_money;
-
+    private LocalDateTime created_at;
+    private LocalDateTime finished_at;
     @OneToMany(targetEntity=Shop.class, mappedBy="games", fetch=FetchType.EAGER)
     private List<Shop> shops;
+
+    public float getPlayer_money() {
+        return player_money;
+    }
+
+    public void setPlayer_money(float player_money) {
+        this.player_money = player_money;
+    }
+
+    public LocalDateTime getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at() {
+        this.created_at = LocalDateTime.now();
+    }
+
+    public LocalDateTime getFinished_at() {
+        return finished_at;
+    }
+
+    public void setFinished_at(int gameTime) {
+        this.finished_at = LocalDateTime.now();
+        this.finished_at = this.finished_at.plusHours(gameTime);
+    }
 
     public float getPlayerMoney() {
         return player_money;
