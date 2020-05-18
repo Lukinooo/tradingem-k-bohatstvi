@@ -97,7 +97,7 @@ public class ShopManager {
                     int price = (int) (rand.nextInt((int) ((prod.getPriceCategory().getMax_price() - prod.getPriceCategory().getMin_price()) + 1)) + prod.getPriceCategory().getMin_price());
 
 //                    jedis.rpush("obchod:" + shop.getId() + ":produkty", prod.getName() + ":" + prod.getPrice() + ":" + "10");
-                    jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()), price + ":" + "10");
+                    jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()), prod.getPriceCategory().getId() + ":" + price + ":" + "10");
                     gm.buyProduct((long) 1, shop.getId(), prod.getId());
                     gm.sellProduct((long) 1, shop.getId(), prod.getId());
                 }

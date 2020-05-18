@@ -1,6 +1,8 @@
 package org.acme.mechanics;
 
 import org.acme.models.Player;
+import org.acme.persistence.ShopPersist;
+import org.acme.services.ShopManager;
 import redis.clients.jedis.Jedis;
 
 public class GameMechanic implements MechanicsLayer {
@@ -15,34 +17,33 @@ public class GameMechanic implements MechanicsLayer {
     }
 
     public void buyProduct(Long playerId, Long shopId, Long productId) {
-        Jedis jedis = new Jedis("localhost", 6379);
-        String priceCount = jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId));
+        this.setProductPrice(playerId, shopId, productId, "buy");
 
-        String[] splitPriceCount = priceCount.split(":");
-        Double price = Double.valueOf(splitPriceCount[0]);
-        int count = Integer.parseInt(splitPriceCount[1]);
-
-        price -= 0.1;
-        count--;
-
-        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), price + ":" + count);
-
-        System.out.println(jedis.hgetAll("obchod:" + shopId + ":produkty"));
     }
 
     public void sellProduct(Long playerId, Long shopId, Long productId) {
+        this.setProductPrice(playerId, shopId, productId, "sell");
+    }
+
+    public void setProductPrice(Long playerId, Long shopId, Long productId, String method) {
         Jedis jedis = new Jedis("localhost", 6379);
         String priceCount = jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId));
 
         String[] splitPriceCount = priceCount.split(":");
-        Double price = Double.valueOf(splitPriceCount[0]);
-        int count = Integer.parseInt(splitPriceCount[1]);
+        int categoryId = Integer.parseInt(splitPriceCount[0]);
+        Double price = Double.valueOf(splitPriceCount[1]);
+        int count = Integer.parseInt(splitPriceCount[2]);
 
-        price += 0.1;
-        count++;
+        if (method == "buy") {
+            price -= 0.1 * categoryId;
+            count--;
+        }
+        else if (method == "sell") {
+            price += 0.1 * categoryId;
+            count++;
+        }
 
-        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), price + ":" + count);
+        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), categoryId + ":" + price + ":" + count);
         System.out.println(jedis.hgetAll("obchod:" + shopId + ":produkty"));
     }
-
 }
