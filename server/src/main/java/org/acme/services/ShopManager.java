@@ -1,5 +1,6 @@
 package org.acme.services;
 
+import org.acme.mechanics.GameMechanic;
 import org.acme.models.Game;
 import org.acme.models.Product;
 import org.acme.models.Shop;
@@ -81,6 +82,7 @@ public class ShopManager {
 
         Jedis jedis = new Jedis("localhost", 6379);
         Random rand = new Random();
+        GameMechanic gm = new GameMechanic();
 
         for (Shop shop : shops) {
             jedis.rpush("hra:" + game.getId() + ":obchody", String.valueOf(shop.getId()));
@@ -89,11 +91,17 @@ public class ShopManager {
                 if ((rand.nextInt(100) & 1) == 1) {
                     Product prod = (Product) product;
 //                    jedis.rpush("obchod:" + shop.getId() + ":produkty", prod.getName() + ":" + prod.getPrice() + ":" + "10");
-                    jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getName()), prod.getPrice() + ":" + "10");
+                    jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()), prod.getPrice() + ":" + "10");
+                    gm.buyProduct((long) 1, shop.getId(), prod.getId());
+                    gm.sellProduct((long) 1, shop.getId(), prod.getId());
                 }
             }
 
             System.out.println(jedis.hgetAll("obchod:" + shop.getId() + ":produkty"));
+            jedis.flushAll();
+
+
+
 
 //            System.out.println(shopProducts(shop));
         }
