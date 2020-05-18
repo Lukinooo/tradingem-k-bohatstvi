@@ -14,4 +14,35 @@ public class GameMechanic implements MechanicsLayer {
         return money >= moneyToCheck;
     }
 
+    public void buyProduct(Long playerId, Long shopId, Long productId) {
+        Jedis jedis = new Jedis("localhost", 6379);
+        String priceCount = jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId));
+
+        String[] splitPriceCount = priceCount.split(":");
+        Double price = Double.valueOf(splitPriceCount[0]);
+        int count = Integer.parseInt(splitPriceCount[1]);
+
+        price -= 0.1;
+        count--;
+
+        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), price + ":" + count);
+
+        System.out.println(jedis.hgetAll("obchod:" + shopId + ":produkty"));
+    }
+
+    public void sellProduct(Long playerId, Long shopId, Long productId) {
+        Jedis jedis = new Jedis("localhost", 6379);
+        String priceCount = jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId));
+
+        String[] splitPriceCount = priceCount.split(":");
+        Double price = Double.valueOf(splitPriceCount[0]);
+        int count = Integer.parseInt(splitPriceCount[1]);
+
+        price += 0.1;
+        count++;
+
+        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), price + ":" + count);
+        System.out.println(jedis.hgetAll("obchod:" + shopId + ":produkty"));
+    }
+
 }

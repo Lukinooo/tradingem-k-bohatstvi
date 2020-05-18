@@ -1,0 +1,239 @@
+<template>
+  <q-page class = "full-width column   items-center">
+    <q-dialog v-model="alert">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Alert</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          Nie si prihlásený do žiadnej hry!
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup to="/join" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+        <canvas id="map" width="500" height="500"></canvas> 
+  </q-page>
+  
+</template>
+
+
+
+
+<script>
+// import createjs from './node_modules/createjs/1.0.0/createjs.min.js'
+import createjs from 'createjs-module/createjs'
+
+export default {
+  
+  
+  name: 'PageIndex',
+
+  data () {
+    return {
+      color: 'blue',
+      stage: null,
+      position_child :null,
+      vw : Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+      vh : Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+      x_min_dist : null,
+      y_min_dist : null,
+      x_max_dist : null,
+      y_max_dist : null,
+      x_interval : null,
+      y_interval : null,
+      position : {
+        latitude : 48.1903661,
+        longitude : 17.2930368,
+      },
+      newpos : {
+        latitude : 48.1903661,
+        longitude : 17.2930368,
+      },
+      plus : true,
+      alert : false,
+      gps_allert : true,
+    }
+  },
+  computed: {
+      game() {
+        return this.$store.getters['global/game']
+      }
+  },
+  mounted: function(){
+    // document.getElementById('map').
+    console.log('mounted')
+    if (this.game.active){
+      this.paint()
+      console.log('zebrak');
+      console.log('navi' + JSON.stringify(navigator.geolocation));
+          if (navigator.geolocation){
+            // window.setInterval(() => {
+            //     navigator.geolocation.getCurrentPosition(this.updatePlayerPosition)
+            //   }, 1000)
+            navigator.geolocation.watchPosition(this.updatePlayerPosition)
+          }else{
+            console.log('navi' + JSON.stringify(navigator.geolocation));
+            
+          }
+    } else {
+      console.log('alert '+this.alert)
+      this.alert = true;
+    }
+    
+    
+  },
+  methods : {
+    getPosition(){
+      if (this.game.active){
+          console.log('position update');
+          if (this.plus){
+            this.position.latitude += Math.random() *0.001;
+            this.position.longitude += Math.random() *0.001;
+          }else{
+            this.position.latitude -= Math.random() *0.001;
+            this.position.longitude -= Math.random() *0.001;
+          }
+          console.log('navi' + JSON.stringify(navigator.geolocation));
+          if (navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(this.updatePlayerPosition)
+          }else{
+            this.gps_allert = true;
+          }
+          
+      }
+      
+    },
+    //[0,0] je vlavo hore
+    calcBounds(){
+      var shops = this.game.shops
+      console.log('obchody' + JSON.stringify(shops));
+        for (var i = 0; i < this.game.num_shops; i++) {
+          // var dist = calcDist(shops[i].longitude,shops[i].latitude, this.game.gps.longitude,this.game.gps.latitude)
+          var x_dist = this.calcDist(shops[i].gps.longitude, this.game.gps.longitude)
+          var y_dist = this.calcDist(shops[i].gps.latitude, this.game.gps.latitude)
+          if (x_dist > this.x_max_dist ){
+            this.x_max_dist = x_dist;
+          }
+          if (y_dist > this.y_max_dist ){
+            this.y_max_dist = y_dist;
+          }
+          if (x_dist < this.x_min_dist){
+            this.x_min_dist = x_dist;
+          }
+          if (y_dist < this.y_min_dist){
+            this.y_min_dist = y_dist;
+          }
+        }
+        this.x_interval = this.x_max_dist - this.x_min_dist;
+        this.y_interval = this.y_max_dist - this.y_min_dist;
+    },
+    calcDist(x,y){
+      return x-y
+    },
+
+    calcPosOnMap(latitude, longitude){
+      if (this.x_min_dist == null){
+        this.calcBounds()
+      }
+      console.log('calc pos')
+
+      var width = document.getElementById('map').clientWidth;
+      var height = document.getElementById('map').clientHeight;
+      // calcDist(longitude,latitude,this.game.gps.longitude, this.game.gps.latitude)
+      //ziskanie vzdialenosti x a y
+      var x_dist = this.calcDist(longitude,this.game.gps.longitude) 
+      var y_dist = this.calcDist(latitude,this.game.gps.latitude)
+      //tuto vzdialenost treba interpolovat, podla intervalu medzi min max
+      //(x_dist - this.x_min_dist)/this.x_interval;
+      //(y_dist - this.y_min_dist)/this.y_interval;
+      var bot = 0.2;
+      var top = 0.8;
+      var x1_inter = bot + (x_dist - this.x_min_dist)/(this.x_interval/(top-bot));
+      var y1_inter = bot + (y_dist - this.y_min_dist)/(this.y_interval/(top-bot));
+      //previest do suradnicoveho systemu
+      console.log('calc pos'+ JSON.stringify({x: x1_inter*width, y: y1_inter*height}))
+      return {x: x1_inter*width, y: y1_inter*height}
+    },
+
+    updatePlayerPosition(position){
+      var pos = this.calcPosOnMap(position.coords.latitude,position.coords.longitude);
+      this.newpos = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      }
+      this.$q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message: JSON.stringify(this.newpos) + "\n"+ JSON.stringify(this.position)
+        });
+      this.position.latitude = position.coords.latitude,
+      this.position.longitude = position.coords.longitude,
+      this.updateObjPosition(this.position_child,pos)
+    },
+
+    updateObjPosition(bitmap,pos){
+      console.log('act pos'+JSON.stringify(pos))
+      bitmap.x = pos.x-bitmap.scaleX/2;
+      bitmap.y = pos.y-bitmap.scaleY/2;
+    },
+
+    setObjPosition(bitmap,pos,coef = 0.008){
+      var width = document.getElementById('map').clientWidth;
+      var height = document.getElementById('map').clientHeight;
+      bitmap.scaleX = width*coef;
+      bitmap.scaleY = width*coef;
+      this.updateObjPosition(bitmap,pos);
+    },
+
+    paint(){
+    document.getElementById('map').width= this.vw;
+    document.getElementById('map').height= this.vh;  
+    var width = document.getElementById('map').clientWidth;
+    var height = document.getElementById('map').clientHeight;
+    this.stage = new createjs.Stage("map");
+    var square = new createjs.Shape();
+    square.graphics.beginFill(this.game.color).drawRoundRect(-width/2, -height/2, width, height, 0);
+    square.x = width/2;
+    square.y = height/2;
+    this.stage.addChild(square);
+
+    var doge = new Image();
+    doge.src = "statics/game/shop.svg"; 
+    console.log('ahoj');
+    for (var i = 0; i < this.game.num_shops; i++) {
+      console.log('pos '+ i)
+      var bitmap = new createjs.Bitmap(doge);
+
+      //compute position on map from center
+      var pos = this.calcPosOnMap(this.game.shops[i].gps.latitude, this.game.shops[i].gps.longitude)
+      this.setObjPosition(bitmap,pos);
+      this.stage.addChild(bitmap);
+    }
+    console.log('my position')
+    var me = new Image();
+    me.src = "statics/game/location.svg"; 
+    var bitmap = new createjs.Bitmap(me);
+
+    //compute position on map from center
+    var pos = this.calcPosOnMap(this.position.latitude, this.position.longitude)
+    this.setObjPosition(bitmap,pos,0.005)
+    // bitmap.scaleX = width*0.005;
+    // bitmap.scaleY = width*0.005;
+    // bitmap.x = pos.x - bitmap.scaleX/2;
+    // bitmap.y = pos.y - bitmap.scaleY/2;
+    this.position_child = bitmap;
+    this.stage.addChild(this.position_child);
+
+    createjs.Ticker.on("tick", this.stage);
+    this.stage.update(); 
+    },
+  },
+  
+}
+</script>
+

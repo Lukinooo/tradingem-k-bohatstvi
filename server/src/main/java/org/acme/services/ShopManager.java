@@ -1,8 +1,10 @@
 package org.acme.services;
 
+import org.acme.mechanics.GameMechanic;
 import org.acme.models.Game;
 import org.acme.models.Product;
 import org.acme.models.Shop;
+import org.acme.persistence.PriceCategoryPersist;
 import org.acme.persistence.ProductPersistence;
 import org.acme.persistence.ShopPersist;
 import redis.clients.jedis.Jedis;
@@ -78,9 +80,12 @@ public class ShopManager {
         ShopPersist shopPersist = new ShopPersist(em);
         List<Shop> shops = shopPersist.getAllById(game);
         List<Object> products = getProducts(em);
+        PriceCategoryPersist priceCategoryPersist = new PriceCategoryPersist(em);
+        List<Object> priceCategories = priceCategoryPersist.getAll();
 
         Jedis jedis = new Jedis("localhost", 6379);
         Random rand = new Random();
+        GameMechanic gm = new GameMechanic();
 
         for (Shop shop : shops) {
             jedis.rpush("hra:" + game.getId() + ":obchody", String.valueOf(shop.getId()));
@@ -88,9 +93,21 @@ public class ShopManager {
             for (Object product : products) {
                 if ((rand.nextInt(100) & 1) == 1) {
                     Product prod = (Product) product;
-                    jedis.rpush("obchod:" + shop.getId() + ":produkty", prod.getName() + ":" + prod.getPrice() + ":" + "10");
+
+                    int price = (int) (rand.nextInt((int) ((prod.getPriceCategory().getMax_price() - prod.getPriceCategory().getMin_price()) + 1)) + prod.getPriceCategory().getMin_price());
+
+//                    jedis.rpush("obchod:" + shop.getId() + ":produkty", prod.getName() + ":" + prod.getPrice() + ":" + "10");
+                    jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()), price + ":" + "10");
+                    gm.buyProduct((long) 1, shop.getId(), prod.getId());
+                    gm.sellProduct((long) 1, shop.getId(), prod.getId());
                 }
             }
+
+            System.out.println(jedis.hgetAll("obchod:" + shop.getId() + ":produkty"));
+            jedis.flushAll();
+
+
+
 
 //            System.out.println(shopProducts(shop));
         }
