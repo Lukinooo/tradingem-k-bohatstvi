@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "PRICE_CATEGORIES")
 public class PriceCategory {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "sequence_price_category_id")
     private Long id;
     private Integer level;
     private float min_price;

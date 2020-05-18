@@ -71,7 +71,8 @@ public class ShopManager {
     // TODO (implement Lukas or Matej)
     public List getAllShop(String gameId) {
         Jedis jedis = new Jedis("localhost", 6379);
-        return null;
+        List shops = jedis.lrange("hra:" + gameId + ":obchody", 0, -1);
+        return shops;
     }
 
     // TODO implement Set product price in shop by ProductId, ShopId, Price (implement Lukas)
@@ -103,8 +104,8 @@ public class ShopManager {
                 }
             }
 
-            System.out.println(jedis.hgetAll("obchod:" + shop.getId() + ":produkty"));
-            jedis.flushAll();
+//            System.out.println(jedis.hgetAll("obchod:" + shop.getId() + ":produkty"));
+//            jedis.flushAll();
 
 
 

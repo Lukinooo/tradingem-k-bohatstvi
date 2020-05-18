@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "PLAYERS")
 public class Player {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "sequence_player_id")
     private Long id;
     private String name;
 
