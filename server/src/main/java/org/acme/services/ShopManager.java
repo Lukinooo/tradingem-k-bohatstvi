@@ -88,9 +88,12 @@ public class ShopManager {
             for (Object product : products) {
                 if ((rand.nextInt(100) & 1) == 1) {
                     Product prod = (Product) product;
-                    jedis.rpush("obchod:" + shop.getId() + ":produkty", prod.getName() + ":" + prod.getPrice() + ":" + "10");
+//                    jedis.rpush("obchod:" + shop.getId() + ":produkty", prod.getName() + ":" + prod.getPrice() + ":" + "10");
+                    jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getName()), prod.getPrice() + ":" + "10");
                 }
             }
+
+            System.out.println(jedis.hgetAll("obchod:" + shop.getId() + ":produkty"));
 
 //            System.out.println(shopProducts(shop));
         }
