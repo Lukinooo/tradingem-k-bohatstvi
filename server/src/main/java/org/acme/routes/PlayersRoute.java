@@ -5,6 +5,7 @@ import org.acme.configs.GameConfig;
 import org.acme.models.Player;
 import org.acme.services.PlayerManager;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jboss.resteasy.specimpl.MultivaluedTreeMap;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -15,7 +16,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/")
 public class PlayersRoute {
