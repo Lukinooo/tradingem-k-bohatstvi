@@ -5,6 +5,8 @@ import org.acme.mechanics.GameMechanic;
 import org.acme.models.Shop;
 import org.acme.services.ShopManager;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -17,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/")
 public class TradingRoute {
@@ -76,14 +79,31 @@ public class TradingRoute {
 
 
         ShopManager shopManager = new ShopManager(em);
-        HashMap products = shopManager.getShopProducts(shopId);
+        Map<String, String> products = shopManager.getShopProducts(shopId);
 
         String result = null;
-        try {
-            result = mapper.writeValueAsString(products);
-        } catch (IOException e) {
-            e.printStackTrace();
+        ObjectMapper mapper = new ObjectMapper();
+
+        ArrayNode arrayNode = mapper.createArrayNode();
+
+        for (Map.Entry<String, String> product : products.entrySet()) {
+            String prods = product.getKey() + ":" + product.getValue();
+            String[] prodss = prods.split(":");
+
+            ObjectNode objectNode1 = mapper.createObjectNode();
+            objectNode1.put("id", prodss[0]);
+            objectNode1.put("name", prodss[1]);
+            objectNode1.put("category", prodss[2]);
+            objectNode1.put("price", prodss[3]);
+            objectNode1.put("count", prodss[4]);
+
+            arrayNode.add(objectNode1);
         }
+
+
+
+//        String result = null;
+        result = arrayNode.toString();
         return result;
     }
 

@@ -37,7 +37,7 @@ public class GameManager {
         gamePersist.create(game);
 
         shopManager.initializeShops(game);
-        shopManager.initializeProducts(game);
+        shopManager.initializeProducts(game, game.getMax_products());
         return game;
     }
 

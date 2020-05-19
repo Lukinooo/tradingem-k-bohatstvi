@@ -18,9 +18,9 @@ public class GameMechanic implements MechanicsLayer {
         return money >= moneyToCheck;
     }
 
-    public Float buyProduct(String gameId, String playerId, String shopId, String productId) {
+    public Float buyProduct(String gameId, String playerId, String shopId, String productId, String productName) {
         Jedis jedis = new Jedis("localhost", 6379);
-        String priceCount = jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId));
+        String priceCount = jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId) + ":" + productName);
 
         String[] splitPriceCount = priceCount.split(":");
         int categoryId = Integer.parseInt(splitPriceCount[0]);
@@ -33,13 +33,13 @@ public class GameMechanic implements MechanicsLayer {
             count--;
         }
 
-        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), categoryId + ":" + newPrice + ":" + count);
+        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId) + ":" + productName, categoryId + ":" + newPrice + ":" + count);
         return price;
     }
 
-    public Float sellProduct(String gameId, String playerId, String shopId, String productId) {
+    public Float sellProduct(String gameId, String playerId, String shopId, String productId, String productName) {
         Jedis jedis = new Jedis("localhost", 6379);
-        String priceCount = jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId));
+        String priceCount = jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId) + ":" + productName);
 
         String[] splitPriceCount = priceCount.split(":");
         int categoryId = Integer.parseInt(splitPriceCount[0]);
@@ -50,7 +50,7 @@ public class GameMechanic implements MechanicsLayer {
         newPrice -= 0.1 * categoryId;
         count++;
 
-        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), categoryId + ":" + newPrice + ":" + count);
+        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId) + ":" + productName, categoryId + ":" + newPrice + ":" + count);
         return price;
     }
 

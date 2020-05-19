@@ -12,10 +12,7 @@ import org.acme.persistence.ShopPersist;
 import redis.clients.jedis.Jedis;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ShopManager {
     private EntityManager em;
@@ -67,9 +64,9 @@ public class ShopManager {
         return pp.getAll();
     }
 
-    public HashMap getShopProducts(String shopId) {
+    public Map getShopProducts(String shopId) {
         Jedis jedis = new Jedis("localhost", 6379);
-        return (HashMap) jedis.hgetAll("obchod:" + shopId + ":produkty");
+        return jedis.hgetAll("obchod:" + shopId + ":produkty");
     }
 
     // TODO (implement Lukas or Matej)
@@ -87,7 +84,7 @@ public class ShopManager {
 
     // TODO implement Set product price in shop by ProductId, ShopId, Price (implement Lukas)
 
-    public void initializeProducts(Game game) {
+    public void initializeProducts(Game game, int initialCount) {
         ShopPersist shopPersist = new ShopPersist(em);
         List<Shop> shops = shopPersist.getAllById(game);
         List<Object> products = getProducts(em);
@@ -103,7 +100,7 @@ public class ShopManager {
 
                     int price = (int) (rand.nextInt((int) ((prod.getPriceCategory().getMax_price() - prod.getPriceCategory().getMin_price()) + 1)) + prod.getPriceCategory().getMin_price());
 
-                    jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()), prod.getPriceCategory().getId() + ":" + price + ":" + "10");
+                    jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()) + ":" + String.valueOf(prod.getName()), prod.getPriceCategory().getId() + ":" + price + ":" + initialCount);
                 }
             }
         }
@@ -111,21 +108,62 @@ public class ShopManager {
 
     public String buyProduct(String gameId, String playerId, String shopId, String productId) {
         GameMechanic gameMechanic = new GameMechanic();
-        Float price = gameMechanic.buyProduct(gameId, playerId, shopId, productId);
 
         PlayerPersist playerPersist = new PlayerPersist(em);
         Player player = (Player) playerPersist.get(Long.parseLong(playerId));
 
-        return "success";
+        ProductPersistence productPersistence = new ProductPersistence(em);
+        Product product = (Product) productPersistence.get(Long.parseLong(productId));
+        Float price = gameMechanic.buyProduct(gameId, playerId, shopId, productId, product.getName());
+
+        if (gameMechanic.checkFinancial(gameId, player, price)) {
+
+            PlayerManager playerManager = new PlayerManager(em);
+            String playerMoney = playerManager.getPlayerScore(gameId, playerId);
+            String[] playerInfo = playerMoney.split(":");
+            int position = Integer.parseInt(playerInfo[0]);
+            String name = playerInfo[1];
+            Float money = Float.parseFloat(playerInfo[2]);
+
+            System.out.println(position);
+            System.out.println(name);
+            System.out.println(money);
+
+            money -= price;
+
+            player = playerManager.updatePlayerScore(gameId, playerId, money);
+        }
+        return "";
     }
 
     public String sellProduct(String gameId, String playerId, String shopId, String productId) {
         GameMechanic gameMechanic = new GameMechanic();
-        Float price = gameMechanic.sellProduct(gameId, playerId, shopId, productId);
 
         PlayerPersist playerPersist = new PlayerPersist(em);
         Player player = (Player) playerPersist.get(Long.parseLong(playerId));
 
-        return "success";
+        ProductPersistence productPersistence = new ProductPersistence(em);
+        Product product = (Product) productPersistence.get(Long.parseLong(productId));
+        Float price = gameMechanic.sellProduct(gameId, playerId, shopId, productId, product.getName());
+
+        if (gameMechanic.checkFinancial(gameId, player, price)) {
+            PlayerManager playerManager = new PlayerManager(em);
+            String playerMoney = playerManager.getPlayerScore(gameId, playerId);
+
+            String[] playerInfo = playerMoney.split(":");
+            int position = Integer.parseInt(playerInfo[0]);
+            String name = playerInfo[1];
+            Float money = Float.parseFloat(playerInfo[2]);
+
+            System.out.println(position);
+            System.out.println(name);
+            System.out.println(money);
+
+            money += price;
+
+            player = playerManager.updatePlayerScore(gameId, playerId, money);
+        }
+
+        return "playerMoney";
     }
 }
