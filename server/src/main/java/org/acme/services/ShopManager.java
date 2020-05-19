@@ -11,6 +11,7 @@ import redis.clients.jedis.Jedis;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -32,10 +33,10 @@ public class ShopManager {
         Float radius = game.getRadius();
         System.out.println(radius);
 
-        Float minLat = latitudeCenter - radius / 10000;
-        Float maxLat = latitudeCenter + radius / 10000;
-        Float minLon = longitudeCenter - radius / 10000;
-        Float maxLon = longitudeCenter + radius / 10000;
+        Float minLat = latitudeCenter - radius / 100000;
+        Float maxLat = latitudeCenter + radius / 100000;
+        Float minLon = longitudeCenter - radius / 130000;
+        Float maxLon = longitudeCenter + radius / 130000;
 
         Random r = new Random();
         List<Shop> shops = new ArrayList<>();
@@ -64,9 +65,9 @@ public class ShopManager {
         return pp.getAll();
     }
 
-    public List getShopProducts(Long shopId) {
+    public HashMap getShopProducts(String shopId) {
         Jedis jedis = new Jedis("localhost", 6379);
-        return (List) jedis.hgetAll("obchod:" + shopId + ":produkty");
+        return (HashMap) jedis.hgetAll("obchod:" + shopId + ":produkty");
     }
 
     // TODO (implement Lukas or Matej)
@@ -102,8 +103,6 @@ public class ShopManager {
                     int price = (int) (rand.nextInt((int) ((prod.getPriceCategory().getMax_price() - prod.getPriceCategory().getMin_price()) + 1)) + prod.getPriceCategory().getMin_price());
 
                     jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()), prod.getPriceCategory().getId() + ":" + price + ":" + "10");
-                    gm.buyProduct((long) 1, shop.getId(), prod.getId());
-                    gm.sellProduct((long) 1, shop.getId(), prod.getId());
                 }
             }
         }
