@@ -33,10 +33,10 @@ public class ShopManager {
         Float radius = game.getRadius();
         System.out.println(radius);
 
-        Float minLat = latitudeCenter - radius / 10000;
-        Float maxLat = latitudeCenter + radius / 10000;
-        Float minLon = longitudeCenter - radius / 10000;
-        Float maxLon = longitudeCenter + radius / 10000;
+        Float minLat = latitudeCenter - radius / 100000;
+        Float maxLat = latitudeCenter + radius / 100000;
+        Float minLon = longitudeCenter - radius / 130000;
+        Float maxLon = longitudeCenter + radius / 130000;
 
         Random r = new Random();
         List<Shop> shops = new ArrayList<>();
