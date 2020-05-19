@@ -37,10 +37,6 @@ public class GameManager {
         gamePersist.create(game);
 
         shopManager.initializeShops(game);
-
-//        for (Shop shop : game.getShops()) {
-//            shop.setGame(null);
-//        }
         shopManager.initializeProducts(game);
         return game;
     }
