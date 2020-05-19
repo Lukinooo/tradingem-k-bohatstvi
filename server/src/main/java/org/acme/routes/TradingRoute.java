@@ -5,6 +5,8 @@ import org.acme.mechanics.GameMechanic;
 import org.acme.models.Shop;
 import org.acme.services.ShopManager;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -17,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/")
 public class TradingRoute {
@@ -74,16 +77,9 @@ public class TradingRoute {
     public String getShopProducts() {
         String shopId = request.getParam("shop_id");
 
-
         ShopManager shopManager = new ShopManager(em);
-        HashMap products = shopManager.getShopProducts(shopId);
+        String result = shopManager.getShopProducts(shopId);
 
-        String result = null;
-        try {
-            result = mapper.writeValueAsString(products);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return result;
     }
 
@@ -98,12 +94,12 @@ public class TradingRoute {
         String shopId = request.getParam("shop_id");
         String productId = request.getParam("product_id");
 
-        GameMechanic gameMechanic = new GameMechanic();
-        String product = gameMechanic.buyProduct(gameId, playerId, shopId, productId);
+        ShopManager shopManager = new ShopManager(em);
+        String status = shopManager.buyProduct(gameId, playerId, shopId, productId);
 
         String result = null;
         try {
-            result = mapper.writeValueAsString(product);
+            result = mapper.writeValueAsString(status);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,12 +117,12 @@ public class TradingRoute {
         String shopId = request.getParam("shop_id");
         String productId = request.getParam("product_id");
 
-        GameMechanic gameMechanic = new GameMechanic();
-        String product = gameMechanic.sellProduct(gameId, playerId, shopId, productId);
+        ShopManager shopManager = new ShopManager(em);
+        String status = shopManager.sellProduct(gameId, playerId, shopId, productId);
 
         String result = null;
         try {
-            result = mapper.writeValueAsString(product);
+            result = mapper.writeValueAsString(status);
         } catch (IOException e) {
             e.printStackTrace();
         }

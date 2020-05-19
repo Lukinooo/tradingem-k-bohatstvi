@@ -53,15 +53,10 @@ public class PlayersRoute {
         String gameId = request.getParam("game_id");
 
         PlayerManager playerManager = new PlayerManager(em);
-        List sortedPlayers = playerManager.getAllPlayers(gameId);
-        // TODO return as JSON
+        String result = playerManager.getAllPlayers(gameId);
+        // TODO return as JSON - DONE snad, neviem uplne
 
-        String result = null;
-        try {
-            result = mapper.writeValueAsString(sortedPlayers);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         return result;
     }
 

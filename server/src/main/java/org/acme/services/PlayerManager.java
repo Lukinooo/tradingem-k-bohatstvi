@@ -4,6 +4,9 @@ import org.acme.models.Game;
 import org.acme.models.Player;
 import org.acme.models.Shop;
 import org.acme.persistence.PlayerPersist;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
 
@@ -40,11 +43,17 @@ public class PlayerManager {
 
     }
 
-    public List getAllPlayers(String gameId) {
+    public String getAllPlayers(String gameId) {
         Jedis jedis = new Jedis("localhost", 6379);
         Set<Tuple> redisResult = jedis.zrevrangeWithScores("hra:" + gameId + ":hraci", 0, -1);
 
         List result = new ArrayList();
+
+        String formated = null;
+        ObjectMapper mapper = new ObjectMapper();
+
+        ArrayNode arrayNode = mapper.createArrayNode();
+
         for (Tuple tuple : redisResult) {
             String[] element = tuple.getElement().split(":");
             String score = new StringBuilder()
@@ -53,8 +62,17 @@ public class PlayerManager {
                     .append("\"playerMoney\": ").append(tuple.getScore()).append(" }")
                     .toString();
             result.add(score);
+
+            ObjectNode objectNode1 = mapper.createObjectNode();
+            objectNode1.put("playerId", element[0]);
+            objectNode1.put("playerName", element[1]);
+            objectNode1.put("playerMoney", tuple.getScore());
+
+            arrayNode.add(objectNode1);
         }
-        return result;
+
+        formated = arrayNode.toString();
+        return formated;
     }
 
     public String getPlayerScore(String gameId, String playerId) {
