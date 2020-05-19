@@ -1,5 +1,8 @@
 package org.acme.models;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -22,7 +25,7 @@ public class Game implements Serializable {
     private float player_money;
     private LocalDateTime created_at;
     private LocalDateTime finished_at;
-    @OneToMany(targetEntity=Shop.class, mappedBy="games", fetch=FetchType.EAGER)
+    @OneToMany(targetEntity=Shop.class, mappedBy="game", fetch=FetchType.LAZY)
     private List<Shop> shops;
 
     public float getPlayer_money() {

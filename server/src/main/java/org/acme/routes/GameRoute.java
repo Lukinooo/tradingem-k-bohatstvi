@@ -13,6 +13,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Path("/")
 public class GameRoute {
@@ -27,10 +29,18 @@ public class GameRoute {
     @Path("get-start-time")
     @Transactional
     public String getStartTime(){
-        String gameId = request.getParam("gameId");
+        String gameId = request.getParam("game_id");
 
         GameManager gameManager = new GameManager(em);
-        return gameManager.getDateTime(gameId, "START").toString();
+
+        LocalDateTime gameTime = gameManager.getDateTime(gameId, "START");
+        String result = null;
+        try {
+            result = mapper.writeValueAsString(gameTime);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     @GET
@@ -38,9 +48,17 @@ public class GameRoute {
     @Path("get-end-time")
     @Transactional
     public String getEndTime(){
-        String gameId = request.getParam("gameId");
+        String gameId = request.getParam("game_id");
 
         GameManager gameManager = new GameManager(em);
-        return gameManager.getDateTime(gameId, "END").toString();
+
+        LocalDateTime gameTime = gameManager.getDateTime(gameId, "END");
+        String result = null;
+        try {
+            result = mapper.writeValueAsString(gameTime);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

@@ -17,8 +17,10 @@ public class GameMechanic implements MechanicsLayer {
     }
 
     public void buyProduct(Long playerId, Long shopId, Long productId) {
-        this.setProductPrice(playerId, shopId, productId, "buy");
-
+        Jedis jedis = new Jedis("localhost", 6379);
+        if (jedis.hexists("obchod:" + shopId + ":produkty", String.valueOf(productId))) {
+            this.setProductPrice(playerId, shopId, productId, "buy");
+        }
     }
 
     public void sellProduct(Long playerId, Long shopId, Long productId) {
@@ -34,7 +36,7 @@ public class GameMechanic implements MechanicsLayer {
         Double price = Double.valueOf(splitPriceCount[1]);
         int count = Integer.parseInt(splitPriceCount[2]);
 
-        if (method == "buy") {
+        if ((method == "buy") && (count > 0)) {
             price -= 0.1 * categoryId;
             count--;
         }

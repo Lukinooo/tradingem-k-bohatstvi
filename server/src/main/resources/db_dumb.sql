@@ -1,0 +1,21 @@
+INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (1, 1, 5, 1);
+INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (2, 2, 10, 5);
+INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (3, 3, 15, 10);
+INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (4, 4, 20, 15);
+INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (5, 5, 25, 20);
+
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (1, 'sosovicka', 5, 2);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (2, 'hrasok', 5, 2);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (3, 'fazulka', 5, 2);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (4, 'mrkva', 1, 1);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (5, 'avokado', 20, 5);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (6, 'mango', 20, 5);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (7, 'ananas', 15, 4);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (8, 'jablko', 1, 1);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (9, 'petrzlen', 1, 1);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (10, 'zemiaky', 5, 2);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (11, 'pseno', 10, 3);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (12, 'muka', 5, 2);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (13, 'cibula', 5, 2);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (14, 'pohanka', 10, 3);
+INSERT INTO public.products (id, name, price, price_category_id) VALUES (15, 'kuskus', 15, 4);

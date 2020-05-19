@@ -1,9 +1,13 @@
 package org.acme.models;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "SHOPS")
+@JsonIgnoreProperties(value = { "game" })
 public class Shop {
     @Id
     @GeneratedValue(generator = "sequence_shop_id")
@@ -13,9 +17,9 @@ public class Shop {
     private Float latitude;
     private Float longitude;
 
-    @ManyToOne
-    @JoinColumn(name="game_id", nullable=false)
-    private Game games;
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="game_id")
+    private Game game;
 
     public Long getId() {
         return id;
@@ -42,11 +46,11 @@ public class Shop {
     }
 
     public Game getGame() {
-        return games;
+        return game;
     }
 
     public void setGame(Game game) {
-        this.games = game;
+        this.game = game;
     }
 
     public Float getLatitude() {
@@ -65,12 +69,5 @@ public class Shop {
         this.longitude = longitude;
     }
 
-    public Game getGames() {
-        return games;
-    }
-
-    public void setGames(Game games) {
-        this.games = games;
-    }
 }
 
