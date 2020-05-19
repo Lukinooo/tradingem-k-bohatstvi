@@ -21,10 +21,6 @@ public class GameMechanic implements MechanicsLayer {
         if (jedis.hexists("obchod:" + shopId + ":produkty", String.valueOf(productId))) {
             this.setProductPrice(playerId, shopId, productId, "buy");
         }
-        else {
-            this.addProductToShop(playerId, shopId, productId, "buy");
-        }
-
     }
 
     public void sellProduct(Long playerId, Long shopId, Long productId) {
@@ -48,21 +44,6 @@ public class GameMechanic implements MechanicsLayer {
             price += 0.1 * categoryId;
             count++;
         }
-
-        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), categoryId + ":" + price + ":" + count);
-        System.out.println(jedis.hgetAll("obchod:" + shopId + ":produkty"));
-    }
-
-
-    //TODO treba dorobit funkciu na pridavanie produktov do obchodu, pokial v obchode nie je
-    public void addProductToShop(Long playerId, Long shopId, Long productId, String method) {
-        Jedis jedis = new Jedis("localhost", 6379);
-        String priceCount = jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId));
-
-        String[] splitPriceCount = priceCount.split(":");
-        int categoryId = Integer.parseInt(splitPriceCount[0]);
-        Double price = Double.valueOf(splitPriceCount[1]);
-        int count = 1;
 
         jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), categoryId + ":" + price + ":" + count);
         System.out.println(jedis.hgetAll("obchod:" + shopId + ":produkty"));
