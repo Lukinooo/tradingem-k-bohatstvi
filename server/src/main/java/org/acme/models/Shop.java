@@ -13,7 +13,7 @@ public class Shop {
     private Float latitude;
     private Float longitude;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="game_id")
     private Game game;
 

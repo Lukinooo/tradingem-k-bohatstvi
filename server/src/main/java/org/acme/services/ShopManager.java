@@ -30,6 +30,7 @@ public class ShopManager {
         Float longitudeCenter = game.getLongitude_center();
         int numShop = game.getMax_shops();
         Float radius = game.getRadius();
+        System.out.println(radius);
 
         Float minLat = latitudeCenter - radius / 10000;
         Float maxLat = latitudeCenter + radius / 10000;
@@ -42,6 +43,8 @@ public class ShopManager {
             Shop shop = new Shop();
             Float latitude = minLat + r.nextFloat() * (maxLat - minLat);
             Float longitude = minLon + r.nextFloat() * (maxLon - minLon);
+            System.out.println(latitude);
+            System.out.println(longitude);
             String name = "Obchodik " + i;
 
             shop.setGame(game);
@@ -72,7 +75,7 @@ public class ShopManager {
     // TODO (implement Lukas or Matej)
     public List getAllShop(String gameId) {
         ShopPersist shopPersist = new ShopPersist(em);
-        List shops = shopPersist.getAllById(Long.valueOf(gameId));
+        List shops = shopPersist.getAllById(Long.parseLong(gameId));
         return shops;
     }
 
