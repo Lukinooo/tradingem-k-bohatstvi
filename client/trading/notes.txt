@@ -96,3 +96,29 @@ form
         num : 2,
       }
     ]
+
+
+ROUTES
+  get-start-time        NOT USED
+  get-end-time          NOT USED
+  update-player-money   
+    game_id
+    player_id
+    money
+  get-players-score
+    su peniaze vsetkych hracov - rebricek
+  get-player-score
+    su moje peniaze
+  create-game           OK
+  join-game             OK
+  list-games            OK
+  game-settings         NOT USED
+  get-shops
+  get-shop
+  get-shop-products
+    ked vojdem do obchodu
+  buy-product
+    vrati peniaze
+  sell-product
+    vrati peniaze
+

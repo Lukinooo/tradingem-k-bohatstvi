@@ -3,9 +3,12 @@
     <div class="container-sm q-px-xl q-py-sm">
       <div class="row justify-center">
         <div class="col text-center " style="max-width:600px">
+          
+      
+    
           <q-list bordered>
-          <q-item class="row no-wrap justify-between">  
-                <q-item-section class="justify-start q-px-none text-left col-6">Názov hry</q-item-section>
+          <q-item class="row no-wrap justify-between q-px-none q-px-sm">  
+                <q-item-section class="justify-start q-px-none text-left col-4">Názov hry</q-item-section>
                 <q-item-section class="justify-start q-px-none text-center col-2">ID</q-item-section>
                 <q-item-section class="justify-start q-px-none text-center col-2">Počet hráčov</q-item-section>
                 <q-item-section class="justify-end q-px-none text-right col">Farba</q-item-section>
@@ -13,19 +16,17 @@
           </q-item>
           </q-list>
           <q-list bordered>
-            
-            <q-item class="row no-wrap justify-between" clickable v-ripple v-for="game in games" :key="game.id" @click="join(game.id)">  
-                <q-item-section class="justify-start q-px-none text-left col-6">{{game.name}}</q-item-section>
-                <q-item-section class="justify-start q-px-none text-center col-2">{{game.id}}</q-item-section>
-                <q-item-section class="justify-start q-px-none text-center col-2">{{game.players}}</q-item-section>
-                <q-item-section avatar class="justify-end q-px-none text-right col">
-                  <q-avatar :color="game.color" text-color="white" />
-                </q-item-section>
-              
-                
-              
-            </q-item>
-
+            <q-scroll-area style="height: 500px;">
+              <q-item class="row no-wrap justify-between q-px-none q-px-sm" clickable v-ripple v-for="game in data" :key="game.id" @click="join(game.id)">  
+                  <q-item-section class="justify-start q-px-none text-left col-4">{{game.name}}</q-item-section>
+                  <q-item-section class="justify-start q-px-none text-center col-2">{{game.id}}</q-item-section>
+                  <q-item-section class="justify-start q-px-none text-center col-2">{{game.max_player}}</q-item-section>
+                  <q-item-section avatar class="justify-end q-px-none text-right col">
+                    <span style="height: 40px; width: 40px; background-color: #bbb; border-radius: 50%; display: inline-block;" v-bind:style="{ 'background-color': game.color, }"> </span>
+                    <!-- <q-avatar :color="red" text-color="white" /> -->
+                  </q-item-section>
+              </q-item>
+            </q-scroll-area>
           </q-list>
         </div>
       </div>
@@ -38,6 +39,7 @@ import Axios from 'axios';
 export default {
   data() {
     return {
+      data: null,
       games: [
        
         {
@@ -115,18 +117,48 @@ export default {
   },
   methods : {
     join(id){
-      console.log('clicked game'+ JSON.stringify(this.games.find(e => e.id === id)))
+      console.log('clicked game'+ JSON.stringify(this.data.find(e => e.id === id)))
       //get details of game into store
-      console.log(JSON.stringify(this.joined))
-      this.$store.dispatch('global/joinGame', this.joined)
-      this.$router.push('/game')
+      this.joined = this.data.find(e => e.id === id);
+      this.$store.dispatch('global/initGame', this.joined).then(()=>{
+        console.log(JSON.stringify(this.joined))
+
+        this.$axios.get('/join-game',{
+          params : {
+          player_name : this.$store.getters['global/nick'],
+          game_id : this.$store.getters['global/game'].id 
+          }
+        })
+      .then((response) => {
+        this.data = response.data
+        console.log('response '+JSON.stringify(response.data))
+        this.$router.push('/game')
+        this.$q.notify({
+          color: 'positive',
+          position: 'top',
+          message: 'Si pripojený!',
+          icon: 'done'
+        })
+      })
+      .catch(() => {
+        this.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Problém s pripojením',
+          icon: 'report_problem'
+        })
+      })
+      
+      })
+      
     }
   },
   
   mounted: function(){
       this.$axios.get('/list-games')
       .then((response) => {
-        console.log('response '+JSON.stringify(response))
+        this.data = response.data
+        console.log('response '+JSON.stringify(response.data))
       })
       .catch(() => {
         this.$q.notify({

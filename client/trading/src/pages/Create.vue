@@ -171,13 +171,20 @@ export default {
           this.id = data.id;
           console.log('som pred initom');
             this.$store.dispatch('global/initGame',data).then(() => {
-                this.$q.notify({
-                  color: "green-4",
-                  textColor: "white",
-                  icon: "videogame_asset", 
-                  message: "Vytvorená!",
-                }),
+                this.$axios.get('/join-game', {
+                  params : {
+                    player_name : this.$store.getters['global/nick'],
+                    game_id : this.$store.getters['global/game'].id 
+                  }
+                }).then(()=> 
+                  this.$q.notify({
+                    color: "green-4",
+                    textColor: "white",
+                    icon: "videogame_asset", 
+                    message: "Vytvorená!",
+                  }),
               this.$router.push('/game')
+              )  
             })
         })
       .catch((e) => {

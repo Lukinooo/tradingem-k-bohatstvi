@@ -1,11 +1,18 @@
 export function addToInv (state, {name,num,price}){
+    if (state.money < num*price){
+        return;
+    }
     state.inventory.push({
         name: name,
         num: num,
     })
+    state.game.money -= num*price;
 }
 
 export function buyProd (state, {name,num,price}) {
+    if (state.money < num*price){
+        return;
+    }
     state.inventory.forEach(element => {
         if (element.name === name){
             element.num += num;

@@ -16,7 +16,48 @@
       </q-card>
     </q-dialog>
 
-     <q-dialog v-model="showShop">
+    <q-dialog v-model="showShop">
+        <q-card>
+          <q-card-section>
+            <div class="text-h6">{{nearest.name}}</div>
+          </q-card-section>
+
+          <q-separator />
+
+          <q-card-section style="max-height: 50vh" class="scroll">
+
+            <q-list bordered>
+                <q-item class="row no-wrap justify-between q-px-none q-px-sm " style="max-width: 600px;">  
+                  <q-item-section class="justify-start q-px-none text-left col-4">Názov</q-item-section>
+                  <q-item-section class="justify-start q-px-none text-center col-2">Cena</q-item-section>
+                  <q-item-section class="justify-start q-px-none text-center col-2">Akcia</q-item-section>
+                </q-item>
+            </q-list>
+            <q-list bordered>
+              <q-scroll-area style="max-width: 600px;">
+                <q-item class="row no-wrap justify-between q-px-none q-px-sm" 
+                clickable v-ripple 
+                v-for="p in shopProducts" :key="p.name" 
+                >  
+                  <q-item-section class="justify-start q-px-none text-left col-4">{{p.name}}</q-item-section>
+                  <q-item-section class="justify-start q-px-none text-center col-2">{{p.cena}}</q-item-section>
+                  <q-item-section class="justify-start q-px-none text-center col-2">
+                     <q-btn-group push>
+                      <q-btn push label="First" icon="cloud_download" />
+                      <q-btn push label="Second" icon="cloud_upload" />
+                    </q-btn-group>
+                    {{p.max_player}}
+                    </q-item-section>
+                </q-item>
+              </q-scroll-area>
+            </q-list>
+
+          </q-card-section>
+
+          <q-separator />
+        </q-card>
+      </q-dialog>
+     <!-- <q-dialog v-model="showShop">
       <q-card>
         <q-card-section>
           <div class="text-h6">Inception</div>
@@ -47,7 +88,7 @@
           <q-btn flat label="OK" v-close-popup />
         </q-card-actions>
       </q-card>
-    </q-dialog>
+    </q-dialog> -->
 
         <canvas id="map" width="500" height="500"></canvas> 
   </q-page>
@@ -69,7 +110,7 @@ export default {
   data () {
     return {
       showShop: false,
-      showProducts: false,
+      shopProducts: { '0' : 0},
       color: 'blue',
       stage: null,
       position_child :null,
@@ -93,7 +134,7 @@ export default {
       plus : true,
       alert : false,
       gps_allert : true,
-      nearest : null,
+      nearest : { name : 'name'},
     }
   },
   computed: {
@@ -109,10 +150,15 @@ export default {
       console.log('zebrak');
       console.log('navi' + JSON.stringify(navigator.geolocation));
           if (navigator.geolocation){
-            // window.setInterval(() => {
-            //     navigator.geolocation.getCurrentPosition(this.updatePlayerPosition)
-            //   }, 1000)
-            navigator.geolocation.watchPosition(this.updatePlayerPosition)
+            window.setInterval(() => {
+              var options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+              };
+                navigator.geolocation.getCurrentPosition(this.updatePlayerPosition,this.errornotify,options)
+              }, 3000)
+            // navigator.geolocation.watchPosition(this.updatePlayerPosition)
           }else{
             console.log('navi' + JSON.stringify(navigator.geolocation));
             
@@ -125,7 +171,14 @@ export default {
     
   },
   methods : {
-
+    errornotify(place = 'gps', error){
+          this.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Submit failed on '+ place +' with ' + error,
+          icon: 'report_problem'
+        })
+    },
     //https://www.geodatasource.com/developers/javascript
     //in m
     realDistance(lat1, lon1, lat2, lon2) {
@@ -152,6 +205,19 @@ export default {
       }
     },
 
+    loadShop(id){
+      this.$axios.get('/get-shop-products',{
+        params : {
+          shop_id : id
+        }
+      }).then((response)=>{
+        this.shopProducts = response.data
+        this.showShop = true;
+      }).catch((e) => {
+        this.errornotify('/get-shop-products',e)
+      })
+    },
+
     nearestShop(){
       var shops = this.game.shops;
       console.log('shops ' + JSON.stringify(shops));
@@ -165,11 +231,13 @@ export default {
           min.dist = dist;
         }
       };
+
       min.dist = 20
-      console.log('nearest dist ' + min.dist )
-      if (min.dist < 600){
+      console.log(' WARNING HARD-CODED nearest dist ' + min.dist )
+
+      if (min.dist < 25){
         this.nearest = min;
-        this.showShop = true;
+        this.loadShop(min.id)
       }
     },
 
@@ -201,13 +269,13 @@ export default {
           // var dist = calcDist(shops[i].longitude,shops[i].latitude, this.game.gps.longitude,this.game.gps.latitude)
           var x_dist = this.calcDist(shops[i].longitude, this.game.gps.longitude)
           var y_dist = this.calcDist(shops[i].latitude, this.game.gps.latitude)
-          if (x_dist < this.x_max_dist ){
+          if (x_dist > this.x_max_dist ){
             this.x_max_dist = x_dist;
           }
           if (y_dist < this.y_max_dist ){
             this.y_max_dist = y_dist;
           }
-          if (x_dist > this.x_min_dist){
+          if (x_dist < this.x_min_dist){
             this.x_min_dist = x_dist;
           }
           if (y_dist > this.y_min_dist){
@@ -246,6 +314,9 @@ export default {
     },
 
     updatePlayerPosition(position){
+      console.log('player: '+ position.coords.latitude +" | "+position.coords.longitude);
+      
+      
       var pos = this.calcPosOnMap(position.coords.latitude,position.coords.longitude);
       this.newpos = {
         latitude: position.coords.latitude,

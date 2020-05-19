@@ -4,7 +4,7 @@
     <q-dialog v-model="confirm" persistent style="z-index: 10;">
       <q-card>
         <q-card-section class="row items-center">
-          <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
+          <q-avatar icon="ion-exit" color="primary" text-color="white" />
           <span class="q-ml-sm">Určite chceš odísť z hry?</span>
         </q-card-section>
 
@@ -22,7 +22,7 @@
         <q-fab-action 
         color="amber" text-color="black" icon="local_mall" to="/game/inventory"/>
         <q-fab-action 
-        color="amber" text-color="black" icon="ion_podium" to="/game/ladder"/>
+        color="amber" text-color="black" icon="ion-podium" to="/game/ladder"/>
         <q-fab-action 
         color="amber" text-color="black" @click="confirm = !confirm" icon="ion-exit"/>
       </q-fab>
