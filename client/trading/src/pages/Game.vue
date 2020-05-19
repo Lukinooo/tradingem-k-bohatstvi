@@ -15,6 +15,40 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+     <q-dialog v-model="showShop">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Inception</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis laudantium minus earum totam modi laborum illo, corporis fuga saepe animi aliquam ea enim assumenda ut nulla natus aperiam quis. Iste.
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Open another dialog" @click="secondDialog = true" />
+          <q-btn flat label="Close" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="showProducts" persistent transition-show="scale" transition-hide="scale">
+      <q-card class="bg-teal text-white" style="width: 300px">
+        <q-card-section>
+          <div class="text-h6">Persistent</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          Click/Tap on the backdrop.
+        </q-card-section>
+
+        <q-card-actions align="right" class="bg-white text-teal">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
         <canvas id="map" width="500" height="500"></canvas> 
   </q-page>
   
@@ -34,9 +68,12 @@ export default {
 
   data () {
     return {
+      showShop: false,
+      showProducts: false,
       color: 'blue',
       stage: null,
       position_child :null,
+      shops : null,
       vw : Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
       vh : Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
       x_min_dist : null,
@@ -56,6 +93,7 @@ export default {
       plus : true,
       alert : false,
       gps_allert : true,
+      nearest : null,
     }
   },
   computed: {
@@ -87,6 +125,54 @@ export default {
     
   },
   methods : {
+
+    //https://www.geodatasource.com/developers/javascript
+    //in m
+    realDistance(lat1, lon1, lat2, lon2) {
+      if ((lat1 == lat2) && (lon1 == lon2)) {
+        return 0;
+      }
+      else {
+        var radlat1 = Math.PI * lat1/180;
+        var radlat2 = Math.PI * lat2/180;
+        var theta = lon1-lon2;
+        var radtheta = Math.PI * theta/180;
+        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        if (dist > 1) {
+          dist = 1;
+        }
+        dist = Math.acos(dist);
+        dist = dist * 180/Math.PI;
+        dist = dist * 60 * 1.1515;
+        // if (unit=="K") { dist = dist * 1.609344 }
+        // if (unit=="N") { dist = dist * 0.8684 }
+        //always in m => km * 1000
+        dist = dist * 1.609344 * 1000;
+        return dist;
+      }
+    },
+
+    nearestShop(){
+      var shops = this.game.shops;
+      console.log('shops ' + JSON.stringify(shops));
+      var min = {dist: 2000};
+      for (var i = 0; i < this.game.num_shops; i++) {
+        var e = shops[i]
+        var dist = this.realDistance(e.latitude, e.longitude, this.position.latitude, this.position.longitude);
+        console.log('dist ' + dist )
+        if ( dist < min.dist){
+          min = e;
+          min.dist = dist;
+        }
+      };
+      min.dist = 20
+      console.log('nearest dist ' + min.dist )
+      if (min.dist < 600){
+        this.nearest = min;
+        this.showShop = true;
+      }
+    },
+
     getPosition(){
       if (this.game.active){
           console.log('position update');
@@ -113,8 +199,8 @@ export default {
       console.log('obchody' + JSON.stringify(shops));
         for (var i = 0; i < this.game.num_shops; i++) {
           // var dist = calcDist(shops[i].longitude,shops[i].latitude, this.game.gps.longitude,this.game.gps.latitude)
-          var x_dist = this.calcDist(shops[i].gps.longitude, this.game.gps.longitude)
-          var y_dist = this.calcDist(shops[i].gps.latitude, this.game.gps.latitude)
+          var x_dist = this.calcDist(shops[i].longitude, this.game.gps.longitude)
+          var y_dist = this.calcDist(shops[i].latitude, this.game.gps.latitude)
           if (x_dist > this.x_max_dist ){
             this.x_max_dist = x_dist;
           }
@@ -173,7 +259,8 @@ export default {
         });
       this.position.latitude = position.coords.latitude,
       this.position.longitude = position.coords.longitude,
-      this.updateObjPosition(this.position_child,pos)
+      this.updateObjPosition(this.position_child,pos),
+      this.nearestShop()
     },
 
     updateObjPosition(bitmap,pos){
@@ -210,7 +297,7 @@ export default {
       var bitmap = new createjs.Bitmap(doge);
 
       //compute position on map from center
-      var pos = this.calcPosOnMap(this.game.shops[i].gps.latitude, this.game.shops[i].gps.longitude)
+      var pos = this.calcPosOnMap(this.game.shops[i].latitude, this.game.shops[i].longitude)
       this.setObjPosition(bitmap,pos);
       this.stage.addChild(bitmap);
     }

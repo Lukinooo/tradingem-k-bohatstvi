@@ -81,7 +81,10 @@ export default {
   methods: {},
 
   mounted: function(){
-        // this.$store.dispatch("global/leaveGame", this.products);
+    if (this.$store.getters['global/game'].active){
+      this.$store.dispatch("global/leaveGame", this.products);
+      window.location.reload()
+    }
   },
 
   data() {

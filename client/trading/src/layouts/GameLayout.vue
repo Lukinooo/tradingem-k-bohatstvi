@@ -1,9 +1,30 @@
 <template>
   <q-layout view="lHh lpR lFf">
+
+    <q-dialog v-model="confirm" persistent style="z-index: 10;">
+      <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="signal_wifi_off" color="primary" text-color="white" />
+          <span class="q-ml-sm">Určite chceš odísť z hry?</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Odísť" color="secondary" to='/' v-close-popup />
+          <q-btn flat label="Nie, zostanem" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
     <q-page-container class='q-pa-none q-ma-none'>
        <q-fab class="fixed q-pa-md" color="accent" glossy icon="menu" direction="down" v-model="open">
-        <q-fab-action v-for="nav in navs" :key="nav.to"
-        color="amber" text-color="black" @click="onClick" :icon="nav.icon" :to="nav.to"/>
+        <q-fab-action 
+        color="amber" text-color="black" icon="ion-compass" to="/game"/>
+        <q-fab-action 
+        color="amber" text-color="black" icon="local_mall" to="/game/inventory"/>
+        <q-fab-action 
+        color="amber" text-color="black" icon="ion_podium" to="/game/ladder"/>
+        <q-fab-action 
+        color="amber" text-color="black" @click="confirm = !confirm" icon="ion-exit"/>
       </q-fab>
       <router-view />
     </q-page-container>
@@ -21,9 +42,6 @@ export default {
       EssentialLink
     },
   methods: {
-    onClick () {
-      console.log('Clicked on a fab action')
-    },
     menu() {
       left = !left;
       console.out("leftdrawer = " + left);
@@ -31,26 +49,9 @@ export default {
   },
   data() {
     return {
-      
+      confirm: false,
+      address: '',
       open: false,
-      navs : [
-        {
-          to : '/game',
-          icon : "ion-compass"
-        },
-        {
-          to : '/game/inventory',
-          icon : 'local_mall'
-        },
-        {
-          to : '/game/ladder',
-          icon : "ion-podium"
-        },
-        {
-          to : '/',
-          icon : "ion-exit"
-        }
-      ]
     };
   }
 };

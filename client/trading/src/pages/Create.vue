@@ -168,27 +168,16 @@ export default {
         this.finished_at = data.finished_at;
         this.id = data.id;
         this.$store.dispatch('global/initGame',data).then(() => {
-          this.$store.dispatch('global/setCenter',data).then(() => {    
-            this.$axios.get('/get-shops', {
-              gameId: this.$store.getters['global/game'].id
-              }).then((response) =>{
-                this.$store.dispatch('global/addShops',response.data)
-                this.shops = response.data;
-                this.$router.push('/game')
-              }).catch((e) =>{
-                this.errornotify('/get-shops',e)
-              })  
+          this.$store.dispatch('global/setCenter',data).then(()=>{
+            this.$q.notify({
+              color: "green-4",
+              textColor: "white",
+              icon: "videogame_asset", 
+              message: "Vytvorená!"
+            });
+            this.$router.push('/game')
           })
         })
-        
-        
-        this.$q.notify({
-          color: "green-4",
-          textColor: "white",
-          icon: "videogame_asset", 
-          message: "Vytvorená!"
-        });
-
       })
       .catch((e) => {
         this.errornotify('/create-game',e)

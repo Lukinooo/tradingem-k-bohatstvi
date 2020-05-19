@@ -60,6 +60,7 @@ export function initGame(state, data){
             state.commit('addGameStart',data.created_at);
             state.commit('setGameId',data.id);
             state.commit('activateGame');
+            state.commit('addShops',data.shops)
             resolve()
         },1000)
     })
