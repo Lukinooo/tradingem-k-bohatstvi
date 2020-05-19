@@ -75,8 +75,8 @@ public class ShopManager {
 
     // TODO (implement Lukas or Matej)
     public List getAllShop(String gameId) {
-        Jedis jedis = new Jedis("localhost", 6379);
-        List shops = jedis.lrange("hra:" + gameId + ":obchody", 0, -1);
+        ShopPersist shopPersist = new ShopPersist(em);
+        List shops = shopPersist.getAllById(Long.valueOf(gameId));
         return shops;
     }
 
@@ -93,8 +93,6 @@ public class ShopManager {
         GameMechanic gm = new GameMechanic();
 
         for (Shop shop : shops) {
-            jedis.rpush("hra:" + game.getId() + ":obchody", String.valueOf(shop.getId()));
-
             for (Object product : products) {
                 if ((rand.nextInt(100) & 1) == 1) {
                     Product prod = (Product) product;
