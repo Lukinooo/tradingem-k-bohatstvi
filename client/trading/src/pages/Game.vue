@@ -16,15 +16,65 @@
       </q-card>
     </q-dialog>
 
-    <q-dialog v-model="showShop">
-        <q-card>
+    <q-dialog v-model="showShop" >
+      <q-card style="width:100%; height:100%">
+        <q-card-section class="full-width space-between row items-center">
+          <span class="col text-h6 text-left">{{nearest.name}}</span>
+          <span class="col text-h7 text-right">{{money}} €</span>
+        </q-card-section>
+
+        <q-separator />
+
+        <q-card-section class="q-pt-none">
+           <q-list>
+                <q-item class="row no-wrap justify-between q-px-none " style="max-width: 600px;">  
+                  <q-item-section class="q-px-none text-left col-2">Názov</q-item-section>
+                  <q-item-section class="q-px-none text-center col-2">Cena</q-item-section>
+                  <q-item-section class="q-px-none text-center col-2">Pocet</q-item-section>
+                </q-item>
+            </q-list>
+            <q-separator />
+            <q-list style="height=400px"> 
+              
+              <q-scroll-area style="height: 400px;">
+                <!-- class="row no-wrap justify-between q-px-none items-center" -->
+                <q-item  class="full-width column items-center content-center"
+                v-for="p in shopProducts" :key="p.id" 
+                >  
+                    <q-item class="full-width row no-wrap justify-between q-px-none " style="max-width: 600px;">  
+                      <q-item-section class="q-px-none text-left col-2">{{p.name}}</q-item-section>
+                      <q-item-section class="q-px-none text-center col-2">{{p.price}} €</q-item-section>
+                      <q-item-section class="q-px-none text-center col-2">{{p.count}}</q-item-section>
+                    </q-item>
+                    <q-item-section class="row">
+                      <q-item-section class="q-px-none text-center col-5">
+                      <q-btn-group push>
+                          <q-btn push label="Nákup" icon="cloud_download" />
+                          <q-btn push label="Predaj" icon="cloud_upload" />
+                        </q-btn-group>
+                      </q-item-section>
+                    </q-item-section>
+                    <hr style="width:90%">
+                </q-item>
+              </q-scroll-area>
+            </q-list>
+        </q-card-section>
+        <q-separator />
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <!-- <q-dialog v-model="showShop" style="min-width: 320px, max-width: 600px">
+        <q-card style="min-width: 320px, max-width: 600px">
           <q-card-section>
             <div class="text-h6">{{nearest.name}}</div>
           </q-card-section>
 
           <q-separator />
 
-          <q-card-section style="max-height: 50vh" class="scroll">
+          <q-card-section style="max-width: 600px" class="scroll">
 
             <q-list bordered>
                 <q-item class="row no-wrap justify-between q-px-none q-px-sm " style="max-width: 600px;">  
@@ -37,7 +87,7 @@
               <q-scroll-area style="max-width: 600px;">
                 <q-item class="row no-wrap justify-between q-px-none q-px-sm" 
                 clickable v-ripple 
-                v-for="p in shopProducts" :key="p.name" 
+                v-for="p in shopProducts" :key="p.id" 
                 >  
                   <q-item-section class="justify-start q-px-none text-left col-4">{{p.name}}</q-item-section>
                   <q-item-section class="justify-start q-px-none text-center col-2">{{p.cena}}</q-item-section>
@@ -56,7 +106,7 @@
 
           <q-separator />
         </q-card>
-      </q-dialog>
+      </q-dialog> -->
      <!-- <q-dialog v-model="showShop">
       <q-card>
         <q-card-section>
@@ -140,7 +190,13 @@ export default {
   computed: {
       game() {
         return this.$store.getters['global/game']
-      }
+      },
+      money(){
+        return this.$store.getters['global/game'].money
+      },
+      // shopProducts(){
+      //   return { '0' : 0}
+      // },
   },
   mounted: function(){
     // document.getElementById('map').
@@ -211,7 +267,9 @@ export default {
           shop_id : id
         }
       }).then((response)=>{
+        console.log('SHOP PRODUCTS '+JSON.stringify(response.data));
         this.shopProducts = response.data
+        console.log('THIS PRODUCTS '+ JSON.stringify(this.shopProducts));
         this.showShop = true;
       }).catch((e) => {
         this.errornotify('/get-shop-products',e)

@@ -176,14 +176,19 @@ export default {
                     player_name : this.$store.getters['global/nick'],
                     game_id : this.$store.getters['global/game'].id 
                   }
-                }).then(()=> 
-                  this.$q.notify({
+                }).then((response)=> {
+                  this.$store.dispatch('global/join',response.data).then(()=>{
+                    this.$q.notify({
                     color: "green-4",
                     textColor: "white",
                     icon: "videogame_asset", 
                     message: "Vytvorená!",
-                  }),
-              this.$router.push('/game')
+                    }),
+                    this.$router.push('/game')
+                  })
+                } 
+                  
+              
               )  
             })
         })

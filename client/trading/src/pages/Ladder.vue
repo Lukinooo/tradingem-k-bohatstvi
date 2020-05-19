@@ -14,10 +14,10 @@
 
           <q-list bordered>
             <q-scroll-area style="height: 500px;">
-              <q-item class="row no-wrap justify-between q-px-none q-px-sm" v-ripple v-for="p in players" :key="p.playerId">  
+              <q-item class="row no-wrap justify-between q-px-none q-px-sm" v-ripple v-for="p in players" :key="p.playerId" :id="p.playerId">  
                   <q-item-section class="justify-start q-px-none text-left col-4">{{p.playerName}}</q-item-section>
                   <q-item-section class="justify-start q-px-none text-center col-2">{{p.playerId}}</q-item-section>
-                  <q-item-section class="justify-start q-px-none text-center col-2">{{p.money}}</q-item-section>
+                  <q-item-section class="justify-start q-px-none text-center col-2">{{p.playerMoney}}</q-item-section>
               </q-item>
             </q-scroll-area>
           </q-list>
@@ -33,6 +33,12 @@ export default {
   data(){
     return {
       players : null,
+    }
+  },
+  computed: {
+
+    player_id() {
+      return this.$store.getters['global/player_id']
     }
   },
   mounted: function () {
@@ -52,6 +58,9 @@ export default {
           icon: 'report_problem' 
         })
     })
+  },
+  updated: function(){
+    document.getElementById(this.$store.getters['global/player_id']).style.backgroundColor = this.$store.getters['global/game'].color
   } 
 }
 

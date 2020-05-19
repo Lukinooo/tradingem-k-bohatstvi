@@ -50,9 +50,14 @@ export function sellProducts (state, products){
      
 }
 
-export function joinGame (state, game){
-
-    state.commit('changeGame',game);
+export function join(state, data){
+    return new Promise ((resolve, reject) => {
+        setTimeout(()=>{
+            console.log('JOIN PLAYER ID' + data.playerId + " DATA " + JSON.stringify(data))
+            state.commit('playerId',data.playerId)
+            resolve()
+        })
+    })
 }
 
 export function leaveGame (state){

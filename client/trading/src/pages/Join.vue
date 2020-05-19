@@ -131,14 +131,17 @@ export default {
         })
       .then((response) => {
         this.data = response.data
-        console.log('response '+JSON.stringify(response.data))
-        this.$router.push('/game')
-        this.$q.notify({
-          color: 'positive',
-          position: 'top',
-          message: 'Si pripojený!',
-          icon: 'done'
+        this.$store.dispatch('global/join',data).then((response)=>{
+          console.log('response '+JSON.stringify(response.data))
+          this.$router.push('/game')
+          this.$q.notify({
+            color: 'positive',
+            position: 'top',
+            message: 'Si pripojený!',
+            icon: 'done'
+          })
         })
+        
       })
       .catch(() => {
         this.$q.notify({

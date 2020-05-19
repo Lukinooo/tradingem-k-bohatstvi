@@ -9,3 +9,7 @@ export function game (state) {
 export function nick (state) {
     return state.nick
 }
+
+export function player_id(state){
+    return state.player_id
+}

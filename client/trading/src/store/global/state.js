@@ -1,5 +1,6 @@
 export default function () {
   return {
+    player_id : null,
     game : {
       active : false,
       name: 'Pasívne príjmy',

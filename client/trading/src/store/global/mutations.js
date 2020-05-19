@@ -95,3 +95,6 @@ export function shops(state, shops){
     state.game.shops = shops
 }
 
+export function playerId(state,id){
+    state.game.player_id = id
+}
