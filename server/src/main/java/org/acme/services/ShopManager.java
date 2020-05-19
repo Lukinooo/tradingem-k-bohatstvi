@@ -9,6 +9,9 @@ import org.acme.persistence.PlayerPersist;
 import org.acme.persistence.PriceCategoryPersist;
 import org.acme.persistence.ProductPersistence;
 import org.acme.persistence.ShopPersist;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 import redis.clients.jedis.Jedis;
 
 import javax.persistence.EntityManager;
@@ -64,9 +67,31 @@ public class ShopManager {
         return pp.getAll();
     }
 
-    public Map getShopProducts(String shopId) {
+    public String getShopProducts(String shopId) {
         Jedis jedis = new Jedis("localhost", 6379);
-        return jedis.hgetAll("obchod:" + shopId + ":produkty");
+        Map<String, String> products =  jedis.hgetAll("obchod:" + shopId + ":produkty");
+
+        String formated = null;
+        ObjectMapper mapper = new ObjectMapper();
+
+        ArrayNode arrayNode = mapper.createArrayNode();
+
+        for (Map.Entry<String, String> product : products.entrySet()) {
+            String productString = product.getKey() + ":" + product.getValue();
+            String[] productElements = productString.split(":");
+
+            ObjectNode objectNode1 = mapper.createObjectNode();
+            objectNode1.put("id", productElements[0]);
+            objectNode1.put("name", productElements[1]);
+            objectNode1.put("category", productElements[2]);
+            objectNode1.put("price", productElements[3]);
+            objectNode1.put("count", productElements[4]);
+
+            arrayNode.add(objectNode1);
+        }
+
+        formated = arrayNode.toString();
+        return formated;
     }
 
     // TODO (implement Lukas or Matej)

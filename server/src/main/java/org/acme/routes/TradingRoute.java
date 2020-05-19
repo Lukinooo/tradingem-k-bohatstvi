@@ -77,33 +77,9 @@ public class TradingRoute {
     public String getShopProducts() {
         String shopId = request.getParam("shop_id");
 
-
         ShopManager shopManager = new ShopManager(em);
-        Map<String, String> products = shopManager.getShopProducts(shopId);
+        String result = shopManager.getShopProducts(shopId);
 
-        String result = null;
-        ObjectMapper mapper = new ObjectMapper();
-
-        ArrayNode arrayNode = mapper.createArrayNode();
-
-        for (Map.Entry<String, String> product : products.entrySet()) {
-            String prods = product.getKey() + ":" + product.getValue();
-            String[] prodss = prods.split(":");
-
-            ObjectNode objectNode1 = mapper.createObjectNode();
-            objectNode1.put("id", prodss[0]);
-            objectNode1.put("name", prodss[1]);
-            objectNode1.put("category", prodss[2]);
-            objectNode1.put("price", prodss[3]);
-            objectNode1.put("count", prodss[4]);
-
-            arrayNode.add(objectNode1);
-        }
-
-
-
-//        String result = null;
-        result = arrayNode.toString();
         return result;
     }
 
