@@ -7,10 +7,11 @@
           flat
           dense
           round
-          icon="menu"
+          icon="home"
           aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
+          to='/'
         />
+        <!-- @click="leftDrawerOpen = !leftDrawerOpen" -->
 
         <q-toolbar>
           <q-toolbar-title>
@@ -24,7 +25,7 @@
       <q-img src="statics/money.jpg" class="header-image absolute-top" />
     </q-header>
 
- <q-drawer
+ <!-- <q-drawer
         v-model="leftDrawerOpen"
         show-if-above
         overlay
@@ -60,7 +61,7 @@
             <div class="text-weight-bold">{{nick}}</div>
           </div>
         </q-img>
-      </q-drawer>
+      </q-drawer> -->
 
   <q-page-container>
       <div class="container-md">
@@ -79,13 +80,6 @@ export default {
 
   methods: {},
 
-  computed: {
-    // nick: "PU$$¥$$L4¥€R69",
-    nick()  {
-        return this.$store.getters['global/nick']
-      }    
-  },
-
   mounted: function(){
         this.$store.dispatch("global/leaveGame", this.products);
   },
@@ -93,31 +87,31 @@ export default {
   data() {
     return {
       leftDrawerOpen: false,
-      navs : [
-        {
-          label: 'Home',
-          to: '/',
-          icon: 'home',
-        },
-        {
-          label: 'Create',
-          to: '/create',
-          icon: 'add',
+      // navs : [
+      //   {
+      //     label: 'Home',
+      //     to: '/',
+      //     icon: 'home',
+      //   },
+      //   {
+      //     label: 'Create',
+      //     to: '/create',
+      //     icon: 'add',
           
-        },
-        {
-          label: 'Join',
-          to: '/join',
-          icon: 'search',
+      //   },
+      //   {
+      //     label: 'Join',
+      //     to: '/join',
+      //     icon: 'search',
           
-        },
-        {
-          label: 'Game',
-          to: '/game',
-          icon: 'videogame_asset',
+      //   },
+      //   {
+      //     label: 'Game',
+      //     to: '/game',
+      //     icon: 'videogame_asset',
           
-        }
-      ]
+      //   }
+      // ]
     };
   }
 };

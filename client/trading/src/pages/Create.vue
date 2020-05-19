@@ -1,8 +1,8 @@
 <template>
   <q-page>
     <div class="container-sm q-px-xl q-py-sm">
-      <div class="row">
-        <div class="col text-center">
+      <div class="row justify-center">
+        <div class="col text-center " style="max-width:600px">
           <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
             <q-input
               clearable
@@ -77,7 +77,7 @@
               lazy-rules
             /> 
 
-            <q-toggle v-model="accept" label="I accept the license and terms" />
+            <q-toggle v-model="accept" true-value="Verejná" false-value="Súkromná" :label="accept"/>
 
             <div>
               <q-btn label="Submit" type="submit" color="primary" />
@@ -108,21 +108,13 @@ export default {
   },
   methods: {
     onSubmit() {
-      if (this.accept !== true) {
-        this.$q.notify({
-          color: "red-5",
-          textColor: "white",
-          icon: "warning",
-          message: "You need to accept the license and terms first"
-        });
-      } else {
+        //send to server
         this.$q.notify({
           color: "green-4",
           textColor: "white",
-          icon: "cloud_done",
-          message: "Submitted"
+          icon: "videogame_asset", 
+          message: "Vytvorená!"
         });
-      }
     },
     onReset() {
       this.name = this.$store.getters["global/game"].name,

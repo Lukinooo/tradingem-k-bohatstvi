@@ -182,7 +182,7 @@ export default {
       bitmap.y = pos.y-bitmap.scaleY/2;
     },
 
-    setObjPosition(bitmap,pos,coef = 0.008){
+    setObjPosition(bitmap,pos,coef = 0.005){
       var width = document.getElementById('map').clientWidth;
       var height = document.getElementById('map').clientHeight;
       bitmap.scaleX = width*coef;
@@ -221,11 +221,7 @@ export default {
 
     //compute position on map from center
     var pos = this.calcPosOnMap(this.position.latitude, this.position.longitude)
-    this.setObjPosition(bitmap,pos,0.005)
-    // bitmap.scaleX = width*0.005;
-    // bitmap.scaleY = width*0.005;
-    // bitmap.x = pos.x - bitmap.scaleX/2;
-    // bitmap.y = pos.y - bitmap.scaleY/2;
+    this.setObjPosition(bitmap,pos,0.002)
     this.position_child = bitmap;
     this.stage.addChild(this.position_child);
 

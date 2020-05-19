@@ -1,8 +1,8 @@
 <template>
   <q-page>
     <div class="container-sm q-px-xl q-py-sm">
-      <div class="row">
-        <div class="col text-center">
+      <div class="row justify-center">
+        <div class="col text-center " style="max-width:600px">
           <q-list bordered>
           <q-item class="row no-wrap justify-between">  
                 <q-item-section class="justify-start q-px-none text-left col-6">Názov hry</q-item-section>
