@@ -56,19 +56,23 @@ export function initGame(state, data){
     return new Promise ((resolve,reject) =>{
         setTimeout(() =>{
             console.log('game init '+ JSON.stringify(data) + ' end '+ data.created_at + ' id ' + data.id);
-            state.commit('addGameEnd',data.finished_at);
-            state.commit('addGameStart',data.created_at);
-            state.commit('setGameId',data.id);
             state.commit('activateGame');
-            state.commit('addShops',data.shops)
+            state.commit('name',data.name);
+            state.commit('setGameId',data.id);
+            state.commit('gps',data);
+            state.commit('addGameEnd',data.finished_at);
+            state.commit('money',data.player_money);
+            state.commit('addGameStart',data.created_at);
+            state.commit('num_products',data.max_products);
+            state.commit('radius',data.radius);
+            state.commit('num_shops',data.max_shops);
+            state.commit('color',data.color)
+            state.commit('num_players',data.max_player)
+            state.commit('duration',data.duration)
+            state.commit('shops',data.shops)
             resolve()
         },1000)
     })
-}
-
-export function addShops(state, data){
-    console.log('shops ' + JSON.stringify(data));
-    state.commit('addShops',data)
 }
 
 export function setCenter(state, data){

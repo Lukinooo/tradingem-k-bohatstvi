@@ -23,7 +23,7 @@ export function sellProd (state, {name, num, price}) {
     state.game.money += num*price;
 }
 
-export function changeName (state, name){
+export function name (state, name){
     state.nick = name;
 }
 
@@ -43,10 +43,6 @@ export function addGameEnd(state, end){
     state.game.finished_at = end;
 }
 
-export function addShops(state, shops){
-    state.game.shops = shops;
-}
-
 export function activateGame(state){
     state.game.active = true;
 }
@@ -59,3 +55,36 @@ export function gps(state, data){
     state.game.gps.longitude = data.longitude_center;
     state.game.gps.latitude = data.latitude_center;
 }
+
+export function money(state, money){
+    state.game.money = money;
+}
+
+export function num_products(state, prods){
+    state.game.num_products = prods;
+}
+
+export function radius(state, radius){
+    state.game.radius = radius;
+}
+
+export function num_shops(state, num){
+    state.game.num_shops = num
+}
+
+export function color(state, color){
+    state.game.color = color
+}
+
+export function num_players(state, num){
+    state.game.num_players = num_players
+}
+
+export function duration(state, duration){
+    state.game.duration = duration
+}
+
+export function shops(state, shops){
+    state.game.shops = shops
+}
+

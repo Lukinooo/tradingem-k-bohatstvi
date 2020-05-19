@@ -29,6 +29,13 @@ musim pamatat
 	inventar hraca
 	moje gps - trackujem
 	obchody	- gps obchodov
+
+
+form 
+  model
+  label
+  hint
+  rules
 	
 
 

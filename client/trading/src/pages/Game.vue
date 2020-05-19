@@ -201,16 +201,16 @@ export default {
           // var dist = calcDist(shops[i].longitude,shops[i].latitude, this.game.gps.longitude,this.game.gps.latitude)
           var x_dist = this.calcDist(shops[i].longitude, this.game.gps.longitude)
           var y_dist = this.calcDist(shops[i].latitude, this.game.gps.latitude)
-          if (x_dist > this.x_max_dist ){
+          if (x_dist < this.x_max_dist ){
             this.x_max_dist = x_dist;
           }
-          if (y_dist > this.y_max_dist ){
+          if (y_dist < this.y_max_dist ){
             this.y_max_dist = y_dist;
           }
-          if (x_dist < this.x_min_dist){
+          if (x_dist > this.x_min_dist){
             this.x_min_dist = x_dist;
           }
-          if (y_dist < this.y_min_dist){
+          if (y_dist > this.y_min_dist){
             this.y_min_dist = y_dist;
           }
         }
@@ -313,6 +313,7 @@ export default {
     this.stage.addChild(this.position_child);
 
     createjs.Ticker.on("tick", this.stage);
+    // this.stage.scaleX = -1;
     this.stage.update(); 
     },
   },

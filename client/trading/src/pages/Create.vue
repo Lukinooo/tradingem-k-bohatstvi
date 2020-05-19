@@ -89,7 +89,7 @@
             />
 
             <div>
-              <q-btn label="Submit" type="submit" color="primary" />
+              <q-btn label="Submit" type="submit" @click="onSubmit" color="primary" />
               <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
             </div>
           </q-form>
@@ -120,7 +120,6 @@ export default {
           num_shops: null,
           num_products: null,
           money: null,
-          color: null,
           duration: null,
           longitude_center : null,
           latitude_center : null,
@@ -132,6 +131,7 @@ export default {
   methods: {
 
     updatePosition(position){
+      console.log('update');
       this.longitude_center = position.coords.longitude
       this.latitude_center = position.coords.latitude
       this.safeSubmit()
@@ -147,38 +147,39 @@ export default {
     },
 
     safeSubmit(){
+      console.log('safe');
       console.log('send ' +this.longitude_center),
-      this.$axios.get('/create-game', {
-        params: {
-          max_players: this.num_players,
-          max_shops: this.num_shops,
-          max_products:this.num_products,
-          game_time: this.duration,
-          color: this.color,
-          name: this.name,
-          radius: this.radius,
-          player_money: this.money,
-          longitude_center: this.longitude_center,
-          latitude_center: this.latitude_center,
-        }
-      })
-      .then((response) => {
-        var data = response.data
-        this.created_at = data.created_at;
-        this.finished_at = data.finished_at;
-        this.id = data.id;
-        this.$store.dispatch('global/initGame',data).then(() => {
-          this.$store.dispatch('global/setCenter',data).then(()=>{
-            this.$q.notify({
-              color: "green-4",
-              textColor: "white",
-              icon: "videogame_asset", 
-              message: "Vytvorená!"
-            });
-            this.$router.push('/game')
-          })
+      console.log('color' + this.color),
+        this.$axios.get('/create-game', {
+          params: {
+            max_players: this.num_players,
+            max_shops: this.num_shops,
+            max_products:this.num_products,
+            game_time: this.duration,
+            color: this.color,
+            game_name: this.name,
+            radius: this.radius,
+            player_money: this.money,
+            longitude_center: this.longitude_center,
+            latitude_center: this.latitude_center,
+          }
         })
-      })
+        .then((response) => {
+          var data = response.data
+          this.created_at = data.created_at;
+          this.finished_at = data.finished_at;
+          this.id = data.id;
+          console.log('som pred initom');
+            this.$store.dispatch('global/initGame',data).then(() => {
+                this.$q.notify({
+                  color: "green-4",
+                  textColor: "white",
+                  icon: "videogame_asset", 
+                  message: "Vytvorená!",
+                }),
+              this.$router.push('/game')
+            })
+        })
       .catch((e) => {
         this.errornotify('/create-game',e)
       })
@@ -186,8 +187,12 @@ export default {
     },
 
     getLocation(){
+      console.log('click');
+
       if (navigator.geolocation){
+        console.log('geo');
         navigator.geolocation.getCurrentPosition(this.updatePosition)
+        console.log('geo end');
       } else {
         this.$q.notify({
           color: 'negative',
@@ -201,6 +206,8 @@ export default {
 
     onSubmit() {
       //send to server
+      console.log('click');
+      
       this.getLocation()     
     },
     onReset() {
@@ -215,7 +222,7 @@ export default {
       this.longitude_center = null,
       this.latitude_center = null,
       this.accept= false,
-      console.log(name)
+      console.log('name ' + this.name)
     }
   },
 

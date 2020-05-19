@@ -2,23 +2,11 @@ export default function () {
   return {
     game : {
       active : false,
+      name: 'Pasívne príjmy',
       id : null,
-      duration : 1,
-      created_at: {
-        "nano": 101819600,
-        "year": 2020,
-        "monthValue": 5,
-        "dayOfMonth": 19,
-        "hour": 12,
-        "minute": 13,
-        "second": 40,
-        "dayOfWeek": "TUESDAY",
-        "dayOfYear": 140,
-        "month": "MAY",
-        "chronology": {
-            "id": "ISO",
-            "calendarType": "iso8601"
-        }
+      gps : {
+        latitude : null,
+        longitude : null,
       },
       finished_at: {
         "nano": 101819600,
@@ -36,17 +24,29 @@ export default function () {
             "calendarType": "iso8601"
         }
       },
-      name: 'Pasívne príjmy',
+      money : 1000,
+      created_at: {
+        "nano": 101819600,
+        "year": 2020,
+        "monthValue": 5,
+        "dayOfMonth": 19,
+        "hour": 12,
+        "minute": 13,
+        "second": 40,
+        "dayOfWeek": "TUESDAY",
+        "dayOfYear": 140,
+        "month": "MAY",
+        "chronology": {
+            "id": "ISO",
+            "calendarType": "iso8601"
+        }
+      },
+      num_products : 5,
       radius : 200,
+      num_shops : 5,
       color : '#027be3',
       num_players : 5,
-      num_shops : 5,
-      num_products : 5,
-      money : 1000,
-      gps : {
-        latitude : null,
-        longitude : null,
-      },
+      duration : 1,
       shops : [
         {
           id : 1,
