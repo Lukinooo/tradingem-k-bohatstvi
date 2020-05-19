@@ -15,10 +15,6 @@
             <q-item class="row no-wrap justify-between" clickable v-ripple v-for="i in inventory" :key="i.name">  
                 <q-item-section class="justify-start q-px-none text-left col-6">{{i.name}}</q-item-section>
                 <q-item-section class="justify-start q-px-none text-center col-2">{{i.num}}</q-item-section>
-                </q-item-section>
-              
-                
-              
             </q-item>
 
           </q-list>

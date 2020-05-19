@@ -34,6 +34,7 @@
 </template>
 
 <script>
+import Axios from 'axios';
 export default {
   data() {
     return {
@@ -120,6 +121,22 @@ export default {
       this.$store.dispatch('global/joinGame', this.joined)
       this.$router.push('/game')
     }
+  },
+  
+  mounted: function(){
+      this.$axios.get('/list-games')
+      .then((response) => {
+        console.log('response '+JSON.stringify(response))
+      })
+      .catch(() => {
+        this.$q.notify({
+          color: 'negative',
+          position: 'top',
+          message: 'Loading failed',
+          icon: 'report_problem'
+        })
+      })
   }
-};
+}
+
 </script>

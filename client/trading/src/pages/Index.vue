@@ -1,6 +1,9 @@
 <template>
   <q-page>
-    <q-img class="top q-pa-none" src="statics/stats.jpg" style="height: 150px" >
+    <q-img class="top q-pa-none" src="statics/stats.jpg" 
+    srcset="statics/stats.jpg,
+                statics/stats2.jpg  1.5x,"
+    style="height: 150px" >
       <div class="absolute-bottom text-center col">
 
         <div class="text-center row no-wrap justify-center items-center">
@@ -114,5 +117,8 @@ export default {
   position: fixed;
   top: 0;
   max-width: 50%;
+}
+.q-img__content > div {
+  background: none;
 }
 </style>

@@ -51,3 +51,31 @@ export function joinGame (state, game){
 export function leaveGame (state){
     state.commit('inactiveGame');
 }
+
+export function initGame(state, data){
+    return new Promise ((resolve,reject) =>{
+        setTimeout(() =>{
+            console.log('game init '+ JSON.stringify(data) + ' end '+ data.created_at + ' id ' + data.id);
+            state.commit('addGameEnd',data.finished_at);
+            state.commit('addGameStart',data.created_at);
+            state.commit('setGameId',data.id);
+            state.commit('activateGame');
+            resolve()
+        },1000)
+    })
+}
+
+export function addShops(state, data){
+    console.log('shops ' + JSON.stringify(data));
+    state.commit('addShops',data)
+}
+
+export function setCenter(state, data){
+    return new Promise ((resolve,reject) => {
+        setTimeout(() => {
+            state.commit('gps',data)
+            resolve()
+        },1000)
+    })
+    
+}
