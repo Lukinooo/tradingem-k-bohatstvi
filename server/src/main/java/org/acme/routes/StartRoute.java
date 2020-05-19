@@ -86,13 +86,10 @@ public class StartRoute {
 
         StringBuilder result = new StringBuilder();
 
-        // TODO NOT WORKING remove game from shop b infinity loops
         try {
             for (Object game : games) {
                 Game objectGame = (Game) game;
-                for (Shop shop : objectGame.getShops()) {
-                    shop.setGame(null);
-                }
+                objectGame.setShops(null);
                 result.append(mapper.writeValueAsString(objectGame));
             }
         } catch (Exception e) {
