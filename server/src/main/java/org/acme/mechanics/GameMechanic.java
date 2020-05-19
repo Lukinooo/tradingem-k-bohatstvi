@@ -16,36 +16,53 @@ public class GameMechanic implements MechanicsLayer {
         return money >= moneyToCheck;
     }
 
-    public void buyProduct(Long playerId, Long shopId, Long productId) {
+    public String buyProduct(String gameId, String playerId, String shopId, String productId) {
         Jedis jedis = new Jedis("localhost", 6379);
         if (jedis.hexists("obchod:" + shopId + ":produkty", String.valueOf(productId))) {
-            this.setProductPrice(playerId, shopId, productId, "buy");
+            Float price = this.setProductPrice(Long.parseLong(playerId), Long.parseLong(shopId), Long.parseLong(productId), "buy");
+//            this.takeMoney(gameId, playerId, price);
         }
+
+        return jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId));
     }
 
-    public void sellProduct(Long playerId, Long shopId, Long productId) {
-        this.setProductPrice(playerId, shopId, productId, "sell");
+    public String sellProduct(String gameId, String playerId, String shopId, String productId) {
+        Jedis jedis = new Jedis("localhost", 6379);
+        if (jedis.hexists("obchod:" + shopId + ":produkty", String.valueOf(productId))) {
+            Float price = this.setProductPrice(Long.parseLong(playerId), Long.parseLong(shopId), Long.parseLong(productId), "sell");
+        }
+
+        return jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId));
     }
 
-    public void setProductPrice(Long playerId, Long shopId, Long productId, String method) {
+    public Float setProductPrice(Long playerId, Long shopId, Long productId, String method) {
         Jedis jedis = new Jedis("localhost", 6379);
         String priceCount = jedis.hget("obchod:" + shopId + ":produkty", String.valueOf(productId));
 
         String[] splitPriceCount = priceCount.split(":");
         int categoryId = Integer.parseInt(splitPriceCount[0]);
-        Double price = Double.valueOf(splitPriceCount[1]);
+        Float price = Float.parseFloat(splitPriceCount[1]);
+        Double newPrice = Double.valueOf(splitPriceCount[1]);
         int count = Integer.parseInt(splitPriceCount[2]);
 
         if ((method == "buy") && (count > 0)) {
-            price -= 0.1 * categoryId;
+            newPrice += 0.1 * categoryId;
             count--;
         }
         else if (method == "sell") {
-            price += 0.1 * categoryId;
+            newPrice -= 0.1 * categoryId;
             count++;
         }
 
-        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), categoryId + ":" + price + ":" + count);
-        System.out.println(jedis.hgetAll("obchod:" + shopId + ":produkty"));
+        jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId), categoryId + ":" + newPrice + ":" + count);
+        return price;
     }
+
+//    public void takeMoney(String gameId, String playerId, Float money) {
+//        this.checkFinancial(gameId, )
+//    }
+//
+//    public void giveMoney(String gameId, String playerId, Float money) {
+//
+//    }
 }
