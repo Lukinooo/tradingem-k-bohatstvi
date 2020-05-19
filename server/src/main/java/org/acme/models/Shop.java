@@ -1,9 +1,13 @@
 package org.acme.models;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "SHOPS")
+@JsonIgnoreProperties(value = { "game" })
 public class Shop {
     @Id
     @GeneratedValue(generator = "sequence_shop_id")

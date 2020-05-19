@@ -38,6 +38,7 @@ public class ShopManager {
         Float maxLon = longitudeCenter + radius / 10000;
 
         Random r = new Random();
+        List<Shop> shops = new ArrayList<>();
 
         for (int i = 0; i < numShop; i++) {
             Shop shop = new Shop();
@@ -53,7 +54,9 @@ public class ShopManager {
             shop.setLongitude(longitude);
 
             sp.create(shop);
+            shops.add(shop);
         }
+        game.setShops(shops);
     }
 
     public List getProducts(EntityManager em) {
@@ -75,7 +78,7 @@ public class ShopManager {
     // TODO (implement Lukas or Matej)
     public List getAllShop(String gameId) {
         ShopPersist shopPersist = new ShopPersist(em);
-        List shops = shopPersist.getAllById(Long.parseLong(gameId));
+        List<Shop> shops = shopPersist.getAllById(Long.parseLong(gameId));
         return shops;
     }
 

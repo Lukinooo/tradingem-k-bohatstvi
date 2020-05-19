@@ -84,18 +84,13 @@ public class StartRoute {
         GameManager gameManager = new GameManager(em);
         List games = gameManager.listGame();
 
-        StringBuilder result = new StringBuilder();
-
+        String result = null;
         try {
-            for (Object game : games) {
-                Game objectGame = (Game) game;
-                objectGame.setShops(null);
-                result.append(mapper.writeValueAsString(objectGame));
-            }
-        } catch (Exception e) {
+            result = mapper.writeValueAsString(games);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return result.toString();
+        return result;
     }
 
     @GET
