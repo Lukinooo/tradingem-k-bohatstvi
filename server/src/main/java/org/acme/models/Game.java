@@ -9,7 +9,7 @@ import java.util.List;
 @Table(name = "GAMES")
 public class Game implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "sequence_game_id")
     private Long id;
     private String name;
     private Float longitude_center;

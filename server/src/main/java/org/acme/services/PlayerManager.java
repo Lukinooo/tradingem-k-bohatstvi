@@ -5,11 +5,12 @@ import org.acme.models.Player;
 import org.acme.models.Shop;
 import org.acme.persistence.PlayerPersist;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Tuple;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static redis.clients.jedis.Protocol.Keyword.WITHSCORES;
 
 public class PlayerManager {
     private EntityManager em;
@@ -36,12 +37,18 @@ public class PlayerManager {
     private void setPlayerMoney(String gameId, Player player, Float money) {
         Jedis jedis = new Jedis("localhost", 6379);
         jedis.zadd("hra:" + gameId + ":hraci", money, player.getId() +  ":" + player.getName());
+
     }
 
-    public List getAllPlayers(String gameId) {
+    public  List getAllPlayers(String gameId) {
         Jedis jedis = new Jedis("localhost", 6379);
-        Set<String> result =  jedis.zrevrangeByScore("hra:" + gameId + ":hraci", 0, -1);
-        return new ArrayList<>(result);
+        Set<Tuple> redisResult =  jedis.zrevrangeWithScores("hra:" + gameId + ":hraci", 0, -1);
+
+        List result = new ArrayList();
+        for (Tuple tuple : redisResult) {
+            result.add(tuple.getElement() + ":" + tuple.getScore());
+        }
+        return result;
     }
 
     public String getPlayerScore(String gameId, String playerId) {
