@@ -2,6 +2,7 @@ package org.acme.services;
 
 import org.acme.models.Game;
 import org.acme.models.Player;
+import org.acme.models.Shop;
 import org.acme.persistence.GamePersist;
 
 import javax.persistence.EntityManager;
@@ -36,13 +37,17 @@ public class GameManager {
         gamePersist.create(game);
 
         shopManager.initializeShops(game);
+
+//        for (Shop shop : game.getShops()) {
+//            shop.setGame(null);
+//        }
         shopManager.initializeProducts(game);
         return game;
     }
 
-    public String addPlayer(String gameName, String playerName) {
+    public String addPlayer(String gameId, String playerName) {
         GamePersist gamePersist = new GamePersist(this.em);
-        Game game = (Game) gamePersist.getByName(gameName);
+        Game game = (Game) gamePersist.get(Long.parseLong(gameId));
 
         PlayerManager playerManager = new PlayerManager(em);
         Player player = playerManager.initializePlayer(game.getId().toString(), playerName, game.getPlayer_money());

@@ -6,6 +6,7 @@ import org.acme.models.Player;
 import org.acme.services.PlayerManager;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.specimpl.MultivaluedTreeMap;
+import redis.clients.jedis.Tuple;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -16,10 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Path("/")
 public class PlayersRoute {
@@ -34,8 +32,8 @@ public class PlayersRoute {
     @Path("update-player-money")
     @Transactional
     public String updatePlayerMoney() {
-        String gameId = request.getParam("gameId");
-        String playerId = request.getParam("playerId");
+        String gameId = request.getParam("game_id");
+        String playerId = request.getParam("player_id");
         Float money = Float.parseFloat(request.getParam("money"));
 
         PlayerManager playerManager = new PlayerManager(em);
@@ -52,10 +50,11 @@ public class PlayersRoute {
     @Path("get-players-score")
     @Transactional
     public String getPlayersScore() {
-        String gameId = request.getParam("gameId");
+        String gameId = request.getParam("game_id");
 
         PlayerManager playerManager = new PlayerManager(em);
         List sortedPlayers = playerManager.getAllPlayers(gameId);
+        // TODO return as JSON
 
         String result = null;
         try {
@@ -71,11 +70,17 @@ public class PlayersRoute {
     @Path("get-player-score")
     @Transactional
     public String getPlayerScore() {
-        String gameId = request.getParam("gameId");
-        String playerId = request.getParam("playerId");
+        String gameId = request.getParam("game_id");
+        String playerId = request.getParam("player_id");
+
 
         PlayerManager playerManager = new PlayerManager(em);
+        String[] splitScore = playerManager.getPlayerScore(gameId, playerId).split(":");
+        StringBuilder result = new StringBuilder();
+        result.append("{\n").append("\t\"position\": ").append(splitScore[0]).append(" ,\n")
+                .append("\t\"playerName\": ").append(splitScore[1]).append(" ,\n")
+                .append("\t\"playerMoney\": ").append(splitScore[2]).append(" \n}");
 
-        return playerManager.getPlayerScore(gameId, playerId);
+        return result.toString();
     }
 }

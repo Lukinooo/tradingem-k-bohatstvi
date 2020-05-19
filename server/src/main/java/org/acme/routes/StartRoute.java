@@ -2,8 +2,10 @@ package org.acme.routes;
 
 import io.vertx.core.http.HttpServerRequest;
 import org.acme.configs.GameConfig;
+import org.acme.models.Shop;
 import org.acme.services.GameManager;
 import org.codehaus.jackson.map.ObjectMapper;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -13,8 +15,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+
 import org.acme.models.Game;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("/")
@@ -59,17 +64,16 @@ public class StartRoute {
         return result;
     }
 
-    @POST
+    @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("join-game")
     @Transactional
     public String joinPlayerIntoGame() {
         String playerName = request.getParam("player_name");
-        String gameName = request.getParam("game_name");
-        System.out.println(playerName + gameName);
+        String gameId = request.getParam("game_id");
 
         GameManager gameManager = new GameManager(em);
-        return gameManager.addPlayer(gameName, playerName);
+        return gameManager.addPlayer(gameId, playerName);
     }
 
     @GET
@@ -80,13 +84,21 @@ public class StartRoute {
         GameManager gameManager = new GameManager(em);
         List games = gameManager.listGame();
 
-        String result = null;
+        StringBuilder result = new StringBuilder();
+
+        // TODO NOT WORKING remove game from shop b infinity loops
         try {
-            result = mapper.writeValueAsString(games);
-        } catch (IOException e) {
+            for (Object game : games) {
+                Game objectGame = (Game) game;
+                for (Shop shop : objectGame.getShops()) {
+                    shop.setGame(null);
+                }
+                result.append(mapper.writeValueAsString(objectGame));
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return result.toString();
     }
 
     @GET
@@ -100,7 +112,8 @@ public class StartRoute {
                 .append("max_players: ").append(gameConfig.players).append(",\n")
                 .append("max_shops: ").append(gameConfig.shops).append(",\n")
                 .append("max_products: ").append(gameConfig.products).append(",\n")
-                .append("radius: ").append(gameConfig.radius).append("\n}");
+                .append("radius: ").append(gameConfig.radius).append(",\n")
+                .append("player_money: ").append(gameConfig.player_money).append("\n}");
 
         return config_value.toString();
     }

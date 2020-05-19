@@ -30,7 +30,7 @@ public class TradingRoute {
     @Path("get-shops")
     @Transactional
     public String getShops() {
-        String gameId = request.getParam("gameId");
+        String gameId = request.getParam("game_id");
 
         ShopManager shopManager = new ShopManager(em);
         List shops = shopManager.getAllShop(gameId);
@@ -49,8 +49,8 @@ public class TradingRoute {
     @Path("get-shop")
     @Transactional
     public String getShop() {
-        String gameId = request.getParam("gameId");
-        String shopId = request.getParam("shopId");
+        String gameId = request.getParam("game_id");
+        String shopId = request.getParam("shop_id");
 
 
         ShopManager shopManager = new ShopManager(em);
