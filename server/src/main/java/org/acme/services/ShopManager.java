@@ -2,8 +2,10 @@ package org.acme.services;
 
 import org.acme.mechanics.GameMechanic;
 import org.acme.models.Game;
+import org.acme.models.Player;
 import org.acme.models.Product;
 import org.acme.models.Shop;
+import org.acme.persistence.PlayerPersist;
 import org.acme.persistence.PriceCategoryPersist;
 import org.acme.persistence.ProductPersistence;
 import org.acme.persistence.ShopPersist;
@@ -93,7 +95,6 @@ public class ShopManager {
 
         Jedis jedis = new Jedis("localhost", 6379);
         Random rand = new Random();
-        GameMechanic gm = new GameMechanic();
 
         for (Shop shop : shops) {
             for (Object product : products) {
@@ -106,5 +107,25 @@ public class ShopManager {
                 }
             }
         }
+    }
+
+    public String buyProduct(String gameId, String playerId, String shopId, String productId) {
+        GameMechanic gameMechanic = new GameMechanic();
+        Float price = gameMechanic.buyProduct(gameId, playerId, shopId, productId);
+
+        PlayerPersist playerPersist = new PlayerPersist(em);
+        Player player = (Player) playerPersist.get(Long.parseLong(playerId));
+
+        return "success";
+    }
+
+    public String sellProduct(String gameId, String playerId, String shopId, String productId) {
+        GameMechanic gameMechanic = new GameMechanic();
+        Float price = gameMechanic.sellProduct(gameId, playerId, shopId, productId);
+
+        PlayerPersist playerPersist = new PlayerPersist(em);
+        Player player = (Player) playerPersist.get(Long.parseLong(playerId));
+
+        return "success";
     }
 }

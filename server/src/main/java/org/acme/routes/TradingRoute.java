@@ -98,12 +98,12 @@ public class TradingRoute {
         String shopId = request.getParam("shop_id");
         String productId = request.getParam("product_id");
 
-        GameMechanic gameMechanic = new GameMechanic();
-        String product = gameMechanic.buyProduct(gameId, playerId, shopId, productId);
+        ShopManager shopManager = new ShopManager(em);
+        String status = shopManager.buyProduct(gameId, playerId, shopId, productId);
 
         String result = null;
         try {
-            result = mapper.writeValueAsString(product);
+            result = mapper.writeValueAsString(status);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -121,12 +121,12 @@ public class TradingRoute {
         String shopId = request.getParam("shop_id");
         String productId = request.getParam("product_id");
 
-        GameMechanic gameMechanic = new GameMechanic();
-        String product = gameMechanic.sellProduct(gameId, playerId, shopId, productId);
+        ShopManager shopManager = new ShopManager(em);
+        String status = shopManager.sellProduct(gameId, playerId, shopId, productId);
 
         String result = null;
         try {
-            result = mapper.writeValueAsString(product);
+            result = mapper.writeValueAsString(status);
         } catch (IOException e) {
             e.printStackTrace();
         }
