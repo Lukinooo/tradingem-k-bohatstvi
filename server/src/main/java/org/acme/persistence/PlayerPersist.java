@@ -44,7 +44,7 @@ public class PlayerPersist implements PersistenceLayer{
 
     @Override
     public List<Object> getAll() {
-        Query query = em.createQuery("SELECT p FROM Player p");
+        Query query = em.createQuery("SELECT p FROM Player p JOIN p.shops");
         return query.getResultList();
     }
 }

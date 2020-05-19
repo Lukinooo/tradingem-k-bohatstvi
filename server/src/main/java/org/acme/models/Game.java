@@ -22,7 +22,7 @@ public class Game implements Serializable {
     private float player_money;
     private LocalDateTime created_at;
     private LocalDateTime finished_at;
-    @OneToMany(targetEntity=Shop.class, mappedBy="games", fetch=FetchType.EAGER)
+    @OneToMany(targetEntity=Shop.class, mappedBy="game", fetch=FetchType.EAGER)
     private List<Shop> shops;
 
     public float getPlayer_money() {

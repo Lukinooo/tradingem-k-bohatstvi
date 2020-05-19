@@ -50,7 +50,7 @@ public class ShopPersist implements PersistenceLayer{
     }
 
     public List<Shop> getAllById(Game game) {
-        Query query = em.createQuery("SELECT s FROM Shop s WHERE s.games = " + game.getId());
+        Query query = em.createQuery("SELECT s FROM Shop s WHERE s.game = " + game.getId());
         return query.getResultList();
     }
 }

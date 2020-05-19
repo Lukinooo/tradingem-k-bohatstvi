@@ -10,6 +10,7 @@ import org.acme.persistence.ShopPersist;
 import redis.clients.jedis.Jedis;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -36,6 +37,7 @@ public class ShopManager {
         Float maxLon = longitudeCenter + radius / 10000;
 
         Random r = new Random();
+        List<Shop> shops = new ArrayList<>();
 
         for (int i = 0; i < numShop; i++) {
             Shop shop = new Shop();
@@ -49,7 +51,10 @@ public class ShopManager {
             shop.setLongitude(longitude);
 
             sp.create(shop);
+
+            shops.add(shop);
         }
+        game.setShops(shops);
     }
 
     public List getProducts(EntityManager em) {

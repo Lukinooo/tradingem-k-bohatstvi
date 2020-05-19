@@ -14,8 +14,8 @@ public class Shop {
     private Float longitude;
 
     @ManyToOne
-    @JoinColumn(name="game_id", nullable=false)
-    private Game games;
+    @JoinColumn(name="game_id")
+    private Game game;
 
     public Long getId() {
         return id;
@@ -42,11 +42,11 @@ public class Shop {
     }
 
     public Game getGame() {
-        return games;
+        return game;
     }
 
     public void setGame(Game game) {
-        this.games = game;
+        this.game = game;
     }
 
     public Float getLatitude() {
@@ -65,12 +65,5 @@ public class Shop {
         this.longitude = longitude;
     }
 
-    public Game getGames() {
-        return games;
-    }
-
-    public void setGames(Game games) {
-        this.games = games;
-    }
 }
 

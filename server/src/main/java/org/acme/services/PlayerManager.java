@@ -36,17 +36,23 @@ public class PlayerManager {
 
     private void setPlayerMoney(String gameId, Player player, Float money) {
         Jedis jedis = new Jedis("localhost", 6379);
-        jedis.zadd("hra:" + gameId + ":hraci", money, player.getId() +  ":" + player.getName());
+        jedis.zadd("hra:" + gameId + ":hraci", money, player.getId() + ":" + player.getName());
 
     }
 
-    public  List getAllPlayers(String gameId) {
+    public List getAllPlayers(String gameId) {
         Jedis jedis = new Jedis("localhost", 6379);
-        Set<Tuple> redisResult =  jedis.zrevrangeWithScores("hra:" + gameId + ":hraci", 0, -1);
+        Set<Tuple> redisResult = jedis.zrevrangeWithScores("hra:" + gameId + ":hraci", 0, -1);
 
         List result = new ArrayList();
         for (Tuple tuple : redisResult) {
-            result.add(tuple.getElement() + ":" + tuple.getScore());
+            String[] element = tuple.getElement().split(":");
+            String score = new StringBuilder()
+                    .append("{ \"playerId\": ").append(element[0]).append(", ")
+                    .append("\"playerName\": ").append(element[1]).append(", ")
+                    .append("\"playerMoney\": ").append(tuple.getScore()).append(" }")
+                    .toString();
+            result.add(score);
         }
         return result;
     }
@@ -56,8 +62,8 @@ public class PlayerManager {
         Player player = (Player) playerPersist.get(Long.parseLong(playerId));
 
         Jedis jedis = new Jedis("localhost", 6379);
-        Long position = jedis.zrank("hra:" + gameId + ":hraci", player.getId() +  ":" + player.getName());
-        Double money = jedis.zscore("hra:" + gameId + ":hraci", player.getId() +  ":" + player.getName());
+        Long position = jedis.zrank("hra:" + gameId + ":hraci", player.getId() + ":" + player.getName());
+        Double money = jedis.zscore("hra:" + gameId + ":hraci", player.getId() + ":" + player.getName());
 
         return position.toString() + ":" + player.getName() + ":" + money.toString();
     }
