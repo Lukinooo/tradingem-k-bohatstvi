@@ -6,19 +6,19 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @ConfigProperties(prefix = "game")
 public class GameConfig {
     @ConfigProperty(name = "color")
-    public  String color;
+    public String color;
 
     @ConfigProperty(name = "players")
-    public  int players;
+    public int players;
 
     @ConfigProperty(name = "shops")
-    public  int shops;
+    public int shops;
 
     @ConfigProperty(name = "products")
-    public  int products;
+    public int products;
 
     @ConfigProperty(name = "radius")
-    public  Float radius;
+    public Float radius;
 
     @ConfigProperty(name = "player_money")
     public float player_money;

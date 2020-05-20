@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
 
-public class GamePersist implements PersistenceLayer{
+public class GamePersist implements PersistenceLayer {
     @Inject
     EntityManager em;
 
@@ -20,6 +20,12 @@ public class GamePersist implements PersistenceLayer{
         return em.find(Game.class, id);
     }
 
+    /**
+     * Function which gets Game by name
+     *
+     * @param name name of game to find
+     * @return Game with name
+     */
     public Object getByName(String name) {
         Query query = em.createQuery("SELECT g FROM Game g WHERE g.name LIKE :name");
         query.setParameter("name", name);
@@ -52,8 +58,4 @@ public class GamePersist implements PersistenceLayer{
         Query query = em.createQuery("SELECT g FROM Game g");
         return query.getResultList();
     }
-
-    // Print query
-//    org.hibernate.query.Query hq = query.unwrap(org.hibernate.query.Query.class);
-//    System.out.println(hq.getQueryString());
 }

@@ -80,6 +80,7 @@ public class ShopManager {
     }
 
     /**
+
      * Function which gets all products stored in the database
      *
      * @param em entity manager for hibernate

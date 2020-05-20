@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
 
-public class PlayerPersist implements PersistenceLayer{
+public class PlayerPersist implements PersistenceLayer {
     @Inject
     EntityManager em;
 
@@ -42,9 +42,12 @@ public class PlayerPersist implements PersistenceLayer{
         return player.getId();
     }
 
+    /**
+     * Select every player in db
+     */
     @Override
     public List<Object> getAll() {
-        Query query = em.createQuery("SELECT p FROM Player p JOIN p.shops");
+        Query query = em.createQuery("SELECT p FROM Player p");
         return query.getResultList();
     }
 }
