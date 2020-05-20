@@ -10,15 +10,31 @@ quarkus.datasource.jdbc.url = jdbc:postgresql://localhost:5432/trading_db
 # drop and create the database at startup (use `update` to only update the schema)
 quarkus.hibernate-orm.database.generation=update
 
-quarkus.http.cors=true
-
 game.color = Green
 game.players = 10
 game.shops = 5
 game.radius = 10
-game.products = 30
+game.products = 15
 
 game.ascent_price_coefficient = 0.1
 game.descent_price_coefficient = 0.1
 
 game.player_money = 300
+
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.type=TRACE
+
+quarkus.log.min-level=DEBUG
+# DEBUG console logging
+quarkus.log.console.enable=true
+quarkus.log.console.format=%d{HH:mm:ss} %-5p [%c{2.}]] (%t) %s%e%n
+quarkus.log.console.level=DEBUG
+
+# DEBUG file logging
+quarkus.log.file.enable=true
+quarkus.log.file.path=../logs/file.log
+quarkus.log.file.level=DEBUG
+quarkus.log.file.format=%d{HH:mm:ss} %-5p [%c{2.}]] (%t) %s%e%n
+quarkus.log.category."io.quarkus.smallrye.jwt".level=DEBUG
+quarkus.log.category."io.undertow.request.security".level=DEBUG
+quarkus.log.category."io.smallrye.jwt".level=DEBUG
