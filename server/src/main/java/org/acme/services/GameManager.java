@@ -55,9 +55,9 @@ public class GameManager {
         logger.info("initializeGame: Create new Game with id " + game.getId());
 
         shopManager.initializeShops(game);
-        logger.info("initializeGame: initialize shops finished");
+        logger.info("initializeGame: initialize Shops finished");
         shopManager.initializeProducts(game, game.getMax_products());
-        logger.info("initializeGame: initialize products finished");
+        logger.info("initializeGame: initialize Products finished");
         return game;
     }
 
@@ -74,7 +74,7 @@ public class GameManager {
 
         PlayerManager playerManager = new PlayerManager(em);
         Player player = playerManager.initializePlayer(game.getId().toString(), playerName, game.getPlayer_money());
-        logger.info("addPlayer: initialize player with id " + player.getId() + " and name " + player.getName());
+        logger.info("addPlayer: initialize Player with id " + player.getId() + " and name " + player.getName());
 
         StringBuilder result = new StringBuilder();
 //        ObjectNode objectNode = mapper.createObjectNode();
@@ -99,8 +99,9 @@ public class GameManager {
      */
     public List listGame() {
         GamePersist gamePersist = new GamePersist(this.em);
-        logger.info("listGame: initialize player with id " + player.getId() + " and name " + player.getName());
-        return gamePersist.getAll();
+        List games = gamePersist.getAll();
+        logger.info("listGame: get all Game results(" + games.size()+ ")" );
+        return games;
     }
 
     public LocalDateTime getDateTime(String gameId, String type) {
