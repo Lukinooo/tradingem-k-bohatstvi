@@ -39,12 +39,9 @@ public class GameMechanic implements MechanicsLayer {
         Float newPrice = Float.valueOf(splitPriceCount[1]);
         int count = Integer.parseInt(splitPriceCount[2]);
 
-        DecimalFormat df = new DecimalFormat();
-        df.setMaximumFractionDigits(2);
 
         if (count > 0) {
-            newPrice += Float.parseFloat(df.format((float) categoryId / 10));
-            newPrice = Float.parseFloat(df.format(newPrice));
+            newPrice += categoryId;
             count--;
         } else {
             return (float) 0.0;
@@ -76,11 +73,7 @@ public class GameMechanic implements MechanicsLayer {
         Double newPrice = Double.valueOf(splitPriceCount[1]);
         int count = Integer.parseInt(splitPriceCount[2]);
 
-        DecimalFormat df = new DecimalFormat();
-        df.setMaximumFractionDigits(2);
-
-        newPrice -= Double.parseDouble(df.format((float) categoryId / 10));
-        newPrice = Double.parseDouble(df.format(newPrice));
+        newPrice -= categoryId;
         count++;
 
         jedis.hset("obchod:" + shopId + ":produkty", String.valueOf(productId) + ":" + productName, categoryId + ":" + newPrice + ":" + count);

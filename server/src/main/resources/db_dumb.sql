@@ -1,8 +1,8 @@
-INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (1, 1, 5, 1);
-INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (2, 2, 10, 5);
-INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (3, 3, 15, 10);
-INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (4, 4, 20, 15);
-INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (5, 5, 25, 20);
+INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (1, 1, 50, 10);
+INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (2, 2, 100, 50);
+INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (3, 3, 150, 100);
+INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (4, 4, 200, 150);
+INSERT INTO public.price_categories (id, level, max_price, min_price) VALUES (5, 5, 250, 200);
 
 INSERT INTO public.products (id, name, price, price_category_id) VALUES (1, 'sosovicka', 5, 2);
 INSERT INTO public.products (id, name, price, price_category_id) VALUES (2, 'hrasok', 5, 2);
