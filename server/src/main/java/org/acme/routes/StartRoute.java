@@ -100,7 +100,7 @@ public class StartRoute {
     public String getGameSettings() {
         StringBuilder config_value = new StringBuilder();
         config_value.append("{\n")
-                .append("color: ").append(gameConfig.color).append(",\n")
+                .append("color: \"").append(gameConfig.color).append("\",\n")
                 .append("max_players: ").append(gameConfig.players).append(",\n")
                 .append("max_shops: ").append(gameConfig.shops).append(",\n")
                 .append("max_products: ").append(gameConfig.products).append(",\n")
