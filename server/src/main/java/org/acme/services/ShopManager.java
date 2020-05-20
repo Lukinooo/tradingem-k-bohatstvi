@@ -15,6 +15,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import redis.clients.jedis.Jedis;
 
 import javax.persistence.EntityManager;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class ShopManager {
@@ -119,16 +120,28 @@ public class ShopManager {
         Random rand = new Random();
 
         for (Shop shop : shops) {
-            for (Object product : products) {
-                if ((rand.nextInt(100) & 1) == 1) {
-                    Product prod = (Product) product;
+            Set<Integer> indexes = randomGenerated(initialCount, products.size());
 
-                    int price = (int) (rand.nextInt((int) ((prod.getPriceCategory().getMax_price() - prod.getPriceCategory().getMin_price()) + 1)) + prod.getPriceCategory().getMin_price());
+            for (Integer index : indexes) {
+                Product prod = (Product) products.get(index);
 
-                    jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()) + ":" + String.valueOf(prod.getName()), prod.getPriceCategory().getId() + ":" + price + ":" + initialCount);
-                }
+                int price = (int) (rand.nextInt((int) ((prod.getPriceCategory().getMax_price() - prod.getPriceCategory().getMin_price()) + 1)) + prod.getPriceCategory().getMin_price());
+
+                jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()) + ":" + String.valueOf(prod.getName()), prod.getPriceCategory().getId() + ":" + price + ":" + initialCount);
             }
         }
+    }
+
+    public Set randomGenerated(int count, int range) {
+        Random rand = new Random();
+        Set<Integer> linkedHashSet = new LinkedHashSet<>();
+        linkedHashSet.size();
+
+        while (linkedHashSet.size() != count){
+            int n = rand.nextInt(range);
+            linkedHashSet.add(n);
+        }
+        return linkedHashSet;
     }
 
     public String buyProduct(String gameId, String playerId, String shopId, String productId) {
