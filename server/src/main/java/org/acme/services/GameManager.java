@@ -21,17 +21,18 @@ public class GameManager {
     }
 
     /**
-     * Initialize game, create object Game, initialize Shop and initialize Products
-     * @param maxPlayers maximum player, which can join into game
-     * @param maxShops maximum shops in game
+     * Function which initialize game, create object Game, initialize Shop and initialize Products
+     *
+     * @param maxPlayers  maximum player, which can join into game
+     * @param maxShops    maximum shops in game
      * @param maxProducts maximum product in shops
-     * @param color color of background in game view
+     * @param color       color of background in game view
      * @param playerMoney starting money for every player
-     * @param longCenter longitude of playground
-     * @param latCenter latitude of playground
-     * @param radius radius of playground (rectangle)
-     * @param gameName name of game
-     * @param gameTime time when game will end
+     * @param longCenter  longitude of playground
+     * @param latCenter   latitude of playground
+     * @param radius      radius of playground (rectangle)
+     * @param gameName    name of game
+     * @param gameTime    time when game will end
      * @return new Game object with Shops
      */
     public Game initializeGame(int maxPlayers, int maxShops, int maxProducts, String color, Float playerMoney,
@@ -62,8 +63,9 @@ public class GameManager {
     }
 
     /**
-     * Create new player and add into game by gameId
-     * @param gameId id of game to join player
+     * Function which create new player and add into game by gameId
+     *
+     * @param gameId     id of game to join player
      * @param playerName player name
      * @return result about progress ( status, gameId, playerId )
      */
@@ -86,27 +88,33 @@ public class GameManager {
         result.append("{\n\"playerId\": \"").append(player.getId()).append("\", ")
                 .append("\"gameId\": \"").append(game.getId()).append("\", ")
                 .append("\"status\": \"").append("ok\"")
-//                .append(player.getName()).append(" joined into game \"")
-//                .append("\" joined into game ")
-//                .append(game.getName())
                 .append("\n}");
         return result.toString();
     }
 
     /**
-     * Get all games in db
+     * Function which gets all games in db
+     *
      * @return list of Games with Shops
      */
     public List listGame() {
         GamePersist gamePersist = new GamePersist(this.em);
         List games = gamePersist.getAll();
-        logger.info("listGame: get all Game results(" + games.size()+ ")" );
+        logger.info("listGame: get all Game results(" + games.size() + ")");
         return games;
     }
 
+    /**
+     * Function which gets time and date of Game
+     *
+     * @param gameId id of Game
+     * @param type   start or end time
+     * @return Game date and time
+     */
     public LocalDateTime getDateTime(String gameId, String type) {
         GamePersist gamePersist = new GamePersist(this.em);
         Game game = (Game) gamePersist.get(Long.parseLong(gameId));
+        logger.info("listGame: get date of Game with id " + gameId + " type " + type);
 
         if (type.equals("END")) {
             return game.getFinished_at();

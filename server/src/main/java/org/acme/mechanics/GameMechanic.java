@@ -11,7 +11,7 @@ import java.text.DecimalFormat;
 public class GameMechanic implements MechanicsLayer {
     public Boolean checkFinancial(String gameId, Player player, Float moneyToCheck) {
         Jedis jedis = new Jedis("localhost", 6379);
-        Double money = jedis.zscore("hra:" + gameId + ":hraci", player.getId() +  ":" + player.getName());
+        Double money = jedis.zscore("hra:" + gameId + ":hraci", player.getId() + ":" + player.getName());
         return money >= moneyToCheck;
     }
 
@@ -20,10 +20,11 @@ public class GameMechanic implements MechanicsLayer {
      * it gets and splits element from redis to get values
      * it decrement count of product by 1 and increase the price
      * it also checks, if count is greater than 0
-     * @param gameId id of the game which is played
-     * @param playerId id of player who wants to buy product
-     * @param shopId id of shop where player wants to buy product
-     * @param productId id of product which he wants to buy
+     *
+     * @param gameId      id of the game which is played
+     * @param playerId    id of player who wants to buy product
+     * @param shopId      id of shop where player wants to buy product
+     * @param productId   id of product which he wants to buy
      * @param productName name od the product
      * @return float price which need to be subtract from players money or 0 if there is no product left, means the count
      * is 0
@@ -45,8 +46,7 @@ public class GameMechanic implements MechanicsLayer {
             newPrice += Float.parseFloat(df.format((float) categoryId / 10));
             newPrice = Float.parseFloat(df.format(newPrice));
             count--;
-        }
-        else {
+        } else {
             return (float) 0.0;
         }
 
@@ -58,10 +58,11 @@ public class GameMechanic implements MechanicsLayer {
      * This function simulates selling process of products in the shop
      * it gets and splits element from redis to get values
      * it increment count of product by 1 and decrease the price
-     * @param gameId id of the game which is played
-     * @param playerId id of player who wants to buy product
-     * @param shopId id of shop where player wants to buy product
-     * @param productId id of product which he wants to buy
+     *
+     * @param gameId      id of the game which is played
+     * @param playerId    id of player who wants to buy product
+     * @param shopId      id of shop where player wants to buy product
+     * @param productId   id of product which he wants to buy
      * @param productName name od the product
      * @return float price which need to be subtract from players money
      */
@@ -88,8 +89,9 @@ public class GameMechanic implements MechanicsLayer {
 
     /**
      * Function which returns product price in the shop
-     * @param shopId shop in which is the product
-     * @param productId the checked product
+     *
+     * @param shopId      shop in which is the product
+     * @param productId   the checked product
      * @param productName name of the checked product
      * @return price of the product
      */
