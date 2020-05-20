@@ -1,0 +1,19 @@
+13:59:54 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-6) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'color' of class 'org.acme.configs.GameConfig'
+13:59:54 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-6) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'player_money' of class 'org.acme.configs.GameConfig'
+13:59:54 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-6) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'players' of class 'org.acme.configs.GameConfig'
+13:59:54 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-6) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'products' of class 'org.acme.configs.GameConfig'
+13:59:54 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-6) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'radius' of class 'org.acme.configs.GameConfig'
+13:59:54 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-6) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'shops' of class 'org.acme.configs.GameConfig'
+13:59:56 INFO  [io.quarkus]] (Quarkus Main Thread) code-with-quarkus 1.0.0-SNAPSHOT (powered by Quarkus 1.4.1.Final) started in 2.326s. Listening on: http://0.0.0.0:8080
+13:59:56 INFO  [io.quarkus]] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+13:59:56 INFO  [io.quarkus]] (Quarkus Main Thread) Installed features: [agroal, cdi, config-yaml, hibernate-orm, jdbc-postgresql, narayana-jta, resteasy]
+14:00:12 INFO  [/l.log]] (executor-thread-1) initializePlayer: Create new Player with name Lukas into game with 19
+14:00:44 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-21) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'color' of class 'org.acme.configs.GameConfig'
+14:00:44 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-21) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'player_money' of class 'org.acme.configs.GameConfig'
+14:00:44 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-21) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'players' of class 'org.acme.configs.GameConfig'
+14:00:44 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-21) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'products' of class 'org.acme.configs.GameConfig'
+14:00:44 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-21) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'radius' of class 'org.acme.configs.GameConfig'
+14:00:44 WARN  [io.qu.ar.de.co.ClassConfigPropertiesUtil]] (build-21) '@ConfigProperty' is ignored when added to a field of a class annotated with '@ConfigProperties'. Offending field is 'shops' of class 'org.acme.configs.GameConfig'
+14:00:45 INFO  [io.quarkus]] (Quarkus Main Thread) code-with-quarkus 1.0.0-SNAPSHOT (powered by Quarkus 1.4.1.Final) started in 2.248s. Listening on: http://0.0.0.0:8080
+14:00:45 INFO  [io.quarkus]] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+14:00:45 INFO  [io.quarkus]] (Quarkus Main Thread) Installed features: [agroal, cdi, config-yaml, hibernate-orm, jdbc-postgresql, narayana-jta, resteasy]

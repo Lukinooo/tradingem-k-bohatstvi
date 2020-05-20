@@ -12,17 +12,20 @@ import redis.clients.jedis.Tuple;
 
 import javax.persistence.EntityManager;
 import java.util.*;
+import java.util.logging.Logger;
 
 import static redis.clients.jedis.Protocol.Keyword.WITHSCORES;
 
 public class PlayerManager {
     private EntityManager em;
+    public Logger logger = Logger.getLogger("/logs/logger.log");
 
     public PlayerManager(EntityManager em) {
         this.em = em;
     }
 
     public Player initializePlayer(String gameId, String name, float money) {
+        logger.info("initializePlayer: Create new Player with name " + name + " into game with " + gameId);
         Player player = new Player();
         player.setName(name);
 
