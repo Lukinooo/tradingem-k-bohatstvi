@@ -95,20 +95,11 @@ public class ShopManager {
         return formated;
     }
 
-    // TODO (implement Lukas or Matej)
-    public Shop getShop(String gameId, String shopId) {
-        Jedis jedis = new Jedis("localhost", 6379);
-        return null;
-    }
-
-    // TODO (implement Lukas or Matej)
     public List getAllShop(String gameId) {
         ShopPersist shopPersist = new ShopPersist(em);
         List<Shop> shops = shopPersist.getAllById(Long.parseLong(gameId));
         return shops;
     }
-
-    // TODO implement Set product price in shop by ProductId, ShopId, Price (implement Lukas)
 
     public void initializeProducts(Game game, int initialCount) {
         ShopPersist shopPersist = new ShopPersist(em);

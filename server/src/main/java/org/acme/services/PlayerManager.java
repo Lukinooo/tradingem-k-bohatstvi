@@ -56,12 +56,6 @@ public class PlayerManager {
 
         for (Tuple tuple : redisResult) {
             String[] element = tuple.getElement().split(":");
-            String score = new StringBuilder()
-                    .append("{ \"playerId\": ").append(element[0]).append(", ")
-                    .append("\"playerName\": ").append(element[1]).append(", ")
-                    .append("\"playerMoney\": ").append(tuple.getScore()).append(" }")
-                    .toString();
-            result.add(score);
 
             ObjectNode objectNode1 = mapper.createObjectNode();
             objectNode1.put("playerId", element[0]);

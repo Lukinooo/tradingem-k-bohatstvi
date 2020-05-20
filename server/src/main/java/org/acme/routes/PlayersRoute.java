@@ -54,8 +54,6 @@ public class PlayersRoute {
 
         PlayerManager playerManager = new PlayerManager(em);
         String result = playerManager.getAllPlayers(gameId);
-        // TODO return as JSON - DONE snad, neviem uplne
-
 
         return result;
     }
