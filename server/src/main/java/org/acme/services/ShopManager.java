@@ -34,10 +34,11 @@ public class ShopManager {
      * generates name for the shop and adds reference to game
      * and add these shops to database
      * the latitude and longitude is generated in given range (value radius in shop)
+     *
      * @param game object for which the shops are generated
      */
     public void initializeShops(Game game) {
-        logger.info("initializeShops: Create" + game.getMax_shops() + "new shops in radius " + game.getRadius() + " into game with " + game.getId());
+        logger.info("initializeShops: Create " + game.getMax_shops() + " new Shops in radius " + game.getRadius() + " into Game with " + game.getId());
         ShopPersist sp = new ShopPersist(em);
         ProductPersistence pp = new ProductPersistence(em);
 
@@ -71,12 +72,16 @@ public class ShopManager {
 
             sp.create(shop);
             shops.add(shop);
+            logger.info("initializeShops: Shop created");
         }
         game.setShops(shops);
+
+        logger.info("initializeShops: Shops for Game with id " + game.getId() + " were created");
     }
 
     /**
-     * Function which gets all products dtored in the database
+     * Function which gets all products stored in the database
+     *
      * @param em entity manager for hibernate
      * @return List of all products from database
      */
@@ -90,13 +95,14 @@ public class ShopManager {
      * Function which gets all products from given shop
      * these products are stored in redis
      * it parses our redis representations to json
+     *
      * @param shopId id of shop, for which we want to get products
      * @return json string with all products for the shop
      */
     public String getShopProducts(String shopId) {
-        logger.info("getShopProducts: Get all shop products for shop with shop id" + shopId);
+        logger.info("getShopProducts: Get all shop Products for Shop with shop id " + shopId);
         Jedis jedis = new Jedis("localhost", 6379);
-        Map<String, String> products =  jedis.hgetAll("obchod:" + shopId + ":produkty");
+        Map<String, String> products = jedis.hgetAll("obchod:" + shopId + ":produkty");
 
         String formated = null;
         ObjectMapper mapper = new ObjectMapper();
@@ -118,16 +124,20 @@ public class ShopManager {
         }
 
         formated = arrayNode.toString();
+
+        logger.info("getShopProducts: All shop Products from Shop with id " + shopId + " are returned");
+
         return formated;
     }
 
     /**
      * Function which returns list off all shops which refer to given game id
+     *
      * @param gameId id of game for which we want to get shops
      * @return list of all shops with equal game id as given
      */
     public List getAllShop(String gameId) {
-        logger.info("getAllShop: Get all shop for game with game id" + gameId);
+        logger.info("getAllShop: Get all shop for game with game id " + gameId);
         ShopPersist shopPersist = new ShopPersist(em);
         List<Shop> shops = shopPersist.getAllById(Long.parseLong(gameId));
         return shops;
@@ -140,11 +150,12 @@ public class ShopManager {
      * the key is product id and product name
      * the value is product category, product price and product count
      * the quantity of products is based on given value
-     * @param game object for which shops we generate products
+     *
+     * @param game         object for which shops we generate products
      * @param initialCount quantity of products in the shops
      */
     public void initializeProducts(Game game, int initialCount) {
-        logger.info("initializeProducts: Initialize products in shops for game with id " + game.getId() + " in count " + initialCount);
+        logger.info("initializeProducts: Initialize Products in Shops for Game with id " + game.getId() + " in count " + initialCount);
         ShopPersist shopPersist = new ShopPersist(em);
         List<Shop> shops = shopPersist.getAllById(game);
         List<Object> products = getProducts(em);
@@ -156,6 +167,8 @@ public class ShopManager {
         for (Shop shop : shops) {
             Set<Integer> indexes = randomGenerated(initialCount, products.size());
 
+            logger.info("initializeProducts: Initialize Products in Shop with id " + shop.getId());
+
             for (Integer index : indexes) {
                 Product prod = (Product) products.get(index);
 
@@ -164,11 +177,14 @@ public class ShopManager {
                 jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()) + ":" + String.valueOf(prod.getName()), prod.getPriceCategory().getId() + ":" + price + ":" + initialCount);
             }
         }
+
+        logger.info("initializeProducts: Products initializes");
     }
 
     /**
      * Function which generates unique indexes in given range
      * this function is used for random selection of products to the shops
+     *
      * @param count number which indicates how much numbers do we want
      * @param range number which indicates range in which thw indexes should be generated
      * @return set of integer indexes
@@ -178,7 +194,7 @@ public class ShopManager {
         Set<Integer> linkedHashSet = new LinkedHashSet<>();
         linkedHashSet.size();
 
-        while (linkedHashSet.size() != count){
+        while (linkedHashSet.size() != count) {
             int n = rand.nextInt(range);
             linkedHashSet.add(n);
         }
@@ -191,9 +207,10 @@ public class ShopManager {
      * calls function from GameMechanics
      * checks player account
      * updates player money
-     * @param gameId game which is played
-     * @param playerId player which is buying stuff
-     * @param shopId shop from which player wants to buy something
+     *
+     * @param gameId    game which is played
+     * @param playerId  player which is buying stuff
+     * @param shopId    shop from which player wants to buy something
      * @param productId product which playeer wants to buy
      * @return price of the product, which was bought or 0 if player dont have money
      */
@@ -207,6 +224,9 @@ public class ShopManager {
         ProductPersistence productPersistence = new ProductPersistence(em);
         Product product = (Product) productPersistence.get(Long.parseLong(productId));
         Float price = gameMechanic.checkPrice(shopId, productId, product.getName());
+
+        logger.info("buyProduct: Product " + product.getName() + " price is" + price);
+
         if (price == (float) 0.0) {
             return "0";
         }
@@ -229,9 +249,10 @@ public class ShopManager {
 
             player = playerManager.updatePlayerScore(gameId, playerId, money);
 
+            logger.info("buyProduct: Player is buying");
+
             return String.valueOf(money);
-        }
-        else {
+        } else {
             return "0";
         }
     }
@@ -242,9 +263,10 @@ public class ShopManager {
      * calls function from GameMechanics
      * checks player account
      * updates player money
-     * @param gameId game which is played
-     * @param playerId player which is buying stuff
-     * @param shopId shop from which player wants to buy something
+     *
+     * @param gameId    game which is played
+     * @param playerId  player which is buying stuff
+     * @param shopId    shop from which player wants to buy something
      * @param productId product which playeer wants to buy
      * @return price of the product, which was bought or 0 if player dont have money
      */
@@ -258,6 +280,8 @@ public class ShopManager {
         ProductPersistence productPersistence = new ProductPersistence(em);
         Product product = (Product) productPersistence.get(Long.parseLong(productId));
         Float price = gameMechanic.checkPrice(shopId, productId, product.getName());
+
+        logger.info("sellProduct: Product " + product.getName() + " price is" + price);
 
         if (gameMechanic.checkFinancial(gameId, player, price)) {
             price = gameMechanic.sellProduct(gameId, playerId, shopId, productId, product.getName());
@@ -277,9 +301,10 @@ public class ShopManager {
 
             player = playerManager.updatePlayerScore(gameId, playerId, money);
 
+            logger.info("sellProduct: Player is selling");
+
             return String.valueOf(money);
-        }
-        else {
+        } else {
             return "0";
         }
     }
