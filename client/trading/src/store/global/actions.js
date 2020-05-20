@@ -2,16 +2,17 @@
 // }
 
 import { money } from "./mutations";
+import { store } from "quasar/wrappers";
 
 export function buyProduct (state,product){
     return new Promise ((resolve, reject) => {
         setTimeout(()=> {
             var found = false;
 
-            console.log('s ' + JSON.stringify(state) + 'prods '+product + 'inv '+ state.inventory)
+            // console.log('s ' + JSON.stringify(state) + 'prods '+product + 'inv '+ state.inventory)
             
-            if (state.getters.money < price){
-                reject()
+            if (state.getters.money < product.price){
+                reject('no money')
             }
 
             state.getters.inventory.forEach( s => {
@@ -26,8 +27,8 @@ export function buyProduct (state,product){
                 state.commit('addToInv',product)
             }
 
-            resolve(state.getters['global/game'].money) 
-        },1000)
+            resolve(state.getters['game'].money)    
+        },200)
     })
     
 }
@@ -38,8 +39,11 @@ export function sellProduct (state, product){
 
             var found = false;
 
-            state.inventory.forEach( s => {
+            state.getters.inventory.forEach( s => {
                 if (s.id === product.id){
+                    if (s.num === 0){
+                        reject('not in inventory')
+                    }
                     state.commit('sellProd',product)
                     // s.num -= p.num;
                     found = true;
@@ -47,11 +51,11 @@ export function sellProduct (state, product){
             })
 
             if (!found){
-                reject()
+                reject('not in inventory')
             }
 
-            resolve(state.getters['global/game'].money)
-        },1000)
+            resolve(state.getters['game'].money)
+        },200)
     })
      
 }
@@ -61,17 +65,20 @@ export function updateMoney(state, money){
         setTimeout(()=>{
             state.commit('money',money)
             resolve()
-        })
+        },200)
     })
 }
 
 export function join(state, data){
     return new Promise ((resolve, reject) => {
         setTimeout(()=>{
-            console.log('JOIN PLAYER ID' + data.playerId + " DATA " + JSON.stringify(data))
+
+            console.log('JOIN PLAYER ID before' + data.playerId + " DATA " + JSON.stringify(data) + ' store ' + state.getters['player_id'])
             state.commit('playerId',data.playerId)
+            console.log('JOIN PLAYER ID after' + data.playerId + " DATA " + JSON.stringify(data) + ' store ' + state.getters['player_id']);
+
             resolve()
-        })
+        },200)
     })
 }
 
@@ -88,7 +95,7 @@ export function initGame(state, data){
             state.commit('setGameId',data.id);
             state.commit('gps',data);
             state.commit('addGameEnd',data.finished_at);
-            state.commit('money',data.player_money);
+            state.commit('money', parseInt(data.player_money,10));
             state.commit('addGameStart',data.created_at);
             state.commit('num_products',data.max_products);
             state.commit('radius',data.radius);
@@ -100,7 +107,7 @@ export function initGame(state, data){
             state.commit('duration',data.duration)
             state.commit('shops',data.shops)
             resolve()
-        },1000)
+        },200)
     })
 }
 
@@ -109,6 +116,6 @@ export function setCenter(state, data){
         setTimeout(() => {
             state.commit('gps',data)
             resolve()
-        },1000)
+        },200)
     })   
 }

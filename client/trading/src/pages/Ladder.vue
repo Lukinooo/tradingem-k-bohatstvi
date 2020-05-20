@@ -1,12 +1,12 @@
 <template>
   <q-page>
-    <div class="container-sm q-px-xl q-py-sm">
+    <div class="container-sm q-px-sm q-py-sm">
       <div class="row justify-center">
         <div class="col text-center " style="max-width:600px">
 
           <q-list bordered>
           <q-item class="row no-wrap justify-between q-px-none q-px-sm">  
-                <q-item-section class="justify-start q-px-none text-left col-4">Nick</q-item-section>
+                <q-item-section class="justify-start q-px-none text-left col-5">Nick</q-item-section>
                 <q-item-section class="justify-start q-px-none text-center col-2">ID</q-item-section>
                 <q-item-section class="justify-start q-px-none text-center col-2">Skóre</q-item-section>
           </q-item>
@@ -15,9 +15,9 @@
           <q-list bordered>
             <q-scroll-area style="height: 500px;">
               <q-item class="row no-wrap justify-between q-px-none q-px-sm" v-ripple v-for="p in players" :key="p.playerId" :id="p.playerId">  
-                  <q-item-section class="justify-start q-px-none text-left col-4">{{p.playerName}}</q-item-section>
+                  <q-item-section class="justify-start q-px-none text-left col-5">{{p.playerName}}</q-item-section>
                   <q-item-section class="justify-start q-px-none text-center col-2">{{p.playerId}}</q-item-section>
-                  <q-item-section class="justify-start q-px-none text-center col-2">{{p.playerMoney}}</q-item-section>
+                  <q-item-section class="justify-start q-px-none text-center col-2">{{parseFloat(p.playerMoney).toFixed(2)}}</q-item-section>
               </q-item>
             </q-scroll-area>
           </q-list>
@@ -48,8 +48,8 @@ export default {
       }
     }).then((response) => {
       this.players = response.data;
-      console.log('ladder data '+ JSON.stringify(response.data));
-      console.log('ladder '+response.data);
+      //console.log('ladder data '+ JSON.stringify(response.data));
+      //console.log('ladder '+response.data);
     }).catch((e)=> {
       this.$q.notify({
           color: 'negative',

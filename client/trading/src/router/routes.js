@@ -16,8 +16,6 @@ const routes = [
       { path: '/game', component: () => import('pages/Game.vue') },
       { path: '/game/ladder', component: () => import('pages/Ladder.vue') },
       { path: '/game/inventory', component: () => import('pages/Inventory.vue') },
-      { path: '/game/shop', component: () => import('pages/Shop.vue') },
-      { path: '/game/end', component: () => import('pages/End.vue') },
 
     ]
   },

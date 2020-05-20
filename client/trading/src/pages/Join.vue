@@ -119,9 +119,9 @@ export default {
     join(id){
       console.log('clicked game'+ JSON.stringify(this.data.find(e => e.id === id)))
       //get details of game into store
-      this.joined = this.data.find(e => e.id === id);
-      this.$store.dispatch('global/initGame', this.joined).then(()=>{
-        console.log(JSON.stringify(this.joined))
+      var joined = this.data.find(e => e.id === id);
+      this.$store.dispatch('global/initGame',joined).then(()=>{
+        console.log('tuto som vosiel ' + JSON.stringify(joined))
 
         this.$axios.get('/join-game',{
           params : {
@@ -129,28 +129,28 @@ export default {
           game_id : this.$store.getters['global/game'].id 
           }
         })
-      .then((response) => {
-        this.data = response.data
-        this.$store.dispatch('global/join',data).then((response)=>{
-          console.log('response '+JSON.stringify(response.data))
-          this.$router.push('/game')
+        .then((response) => {
+          var data = response.data
+          this.$store.dispatch('global/join',data).then((response)=>{
+            
+            this.$router.push('/game')
+            this.$q.notify({
+              color: 'positive',
+              position: 'top',
+              message: 'Si pripojený!',
+              icon: 'done'
+            })
+          })
+          
+        })
+        .catch((e) => {
           this.$q.notify({
-            color: 'positive',
+            color: 'negative',
             position: 'top',
-            message: 'Si pripojený!',
-            icon: 'done'
+            message: 'Problém s pripojením' + e,
+            icon: 'report_problem'
           })
         })
-        
-      })
-      .catch((e) => {
-        this.$q.notify({
-          color: 'negative',
-          position: 'top',
-          message: 'Problém s pripojením' + e,
-          icon: 'report_problem'
-        })
-      })
       
       })
       
@@ -161,7 +161,7 @@ export default {
       this.$axios.get('/list-games')
       .then((response) => {
         this.data = response.data
-        console.log('response '+JSON.stringify(response.data))
+        //console.log('response '+JSON.stringify(response.data))
       })
       .catch(() => {
         this.$q.notify({

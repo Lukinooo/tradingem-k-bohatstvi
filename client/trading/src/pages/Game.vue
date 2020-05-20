@@ -50,8 +50,8 @@
                   <q-item-section class="row">
                     <q-item-section class="q-px-none text-center col-5">
                     <q-btn-group push>
-                        <q-btn push label="Nákup" icon="cloud_download" @click="buyProd(p, nearest.id)"/>
-                        <q-btn push label="Predaj" icon="cloud_upload" @click="sellProd(p,nearest.id)"/>
+                        <q-btn :loading="loadingBuy" push label="Nákup" icon="cloud_download" @click="buyProd(p, nearest.id)"/>
+                        <q-btn :loading="loadingSell" push label="Predaj" icon="cloud_upload" @click="sellProd(p,nearest.id)"/>
                       </q-btn-group>
                     </q-item-section>
                   </q-item-section>
@@ -68,79 +68,35 @@
       </q-card>
     </q-dialog>
 
-    <!-- <q-dialog v-model="showShop" style="min-width: 320px, max-width: 600px">
-        <q-card style="min-width: 320px, max-width: 600px">
-          <q-card-section>
-            <div class="text-h6">{{nearest.name}}</div>
-          </q-card-section>
+    <q-dialog v-model="isEnd" persistent>
+      <q-card class="my-card">
+        <q-img src="statics/quote.jpg" />
 
-          <q-separator />
-
-          <q-card-section style="max-width: 600px" class="scroll">
-
-            <q-list bordered>
-                <q-item class="row no-wrap justify-between q-px-none q-px-sm " style="max-width: 600px;">  
-                  <q-item-section class="justify-start q-px-none text-left col-4">Názov</q-item-section>
-                  <q-item-section class="justify-start q-px-none text-center col-2">Cena</q-item-section>
-                  <q-item-section class="justify-start q-px-none text-center col-2">Akcia</q-item-section>
-                </q-item>
-            </q-list>
-            <q-list bordered>
-              <q-scroll-area style="max-width: 600px;">
-                <q-item class="row no-wrap justify-between q-px-none q-px-sm" 
-                clickable v-ripple 
-                v-for="p in shopProducts" :key="p.id" 
-                >  
-                  <q-item-section class="justify-start q-px-none text-left col-4">{{p.name}}</q-item-section>
-                  <q-item-section class="justify-start q-px-none text-center col-2">{{p.cena}}</q-item-section>
-                  <q-item-section class="justify-start q-px-none text-center col-2">
-                     <q-btn-group push>
-                      <q-btn push label="First" icon="cloud_download" />
-                      <q-btn push label="Second" icon="cloud_upload" />
-                    </q-btn-group>
-                    {{p.max_player}}
-                    </q-item-section>
-                </q-item>
-              </q-scroll-area>
-            </q-list>
-
-          </q-card-section>
-
-          <q-separator />
-        </q-card>
-      </q-dialog> -->
-     <!-- <q-dialog v-model="showShop">
-      <q-card>
         <q-card-section>
-          <div class="text-h6">Inception</div>
+          
+          <div class="row no-wrap items-center">
+            <div class="col text-h6 ellipsis">
+              {{message}}
+            </div>
+          </div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis laudantium minus earum totam modi laborum illo, corporis fuga saepe animi aliquam ea enim assumenda ut nulla natus aperiam quis. Iste.
+          <div class="text-subtitle1">
+            €・{{money}}
+          </div>
+          <div class="text-caption text-grey">
+            {{subtitle}}
+          </div>
         </q-card-section>
 
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat label="Open another dialog" @click="secondDialog = true" />
-          <q-btn flat label="Close" v-close-popup />
+        <q-separator />
+
+        <q-card-actions align="right">
+          <q-btn v-close-popup flat color="primary" round icon="exit_to_app" to="/" />
         </q-card-actions>
       </q-card>
     </q-dialog>
-
-    <q-dialog v-model="showProducts" persistent transition-show="scale" transition-hide="scale">
-      <q-card class="bg-teal text-white" style="width: 300px">
-        <q-card-section>
-          <div class="text-h6">Persistent</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          Click/Tap on the backdrop.
-        </q-card-section>
-
-        <q-card-actions align="right" class="bg-white text-teal">
-          <q-btn flat label="OK" v-close-popup />
-        </q-card-actions>
-      </q-card>
-    </q-dialog> -->
 
         <canvas id="map" width="500" height="500"></canvas> 
   </q-page>
@@ -161,6 +117,12 @@ export default {
 
   data () {
     return {
+      message : '',
+      subtitle :'',
+      interval : null,
+      isEnd : false,
+      loadingBuy : false,
+      loadingSell : false,
       showShop: false,
       shopProducts: { '0' : 0},
       color: 'blue',
@@ -187,8 +149,15 @@ export default {
       alert : false,
       gps_allert : true,
       nearest : { name : 'name'},
+      timestamp :'',
     }
   },
+
+  created() {
+      setInterval(this.getNow,1000)
+      setInterval(this.checkEnd,10000)
+  },
+
   computed: {
       game() {
         return this.$store.getters['global/game']
@@ -205,27 +174,27 @@ export default {
   },
   mounted: function(){
     // document.getElementById('map').
-    console.log('mounted')
+    // console.log('mounted')
     if (this.game.active){
       this.paint()
-      console.log('zebrak');
-      console.log('navi' + JSON.stringify(navigator.geolocation));
-          if (navigator.geolocation){
-            window.setInterval(() => {
-              var options = {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
-              };
-                navigator.geolocation.getCurrentPosition(this.updatePlayerPosition,this.errornotify,options)
-              }, 3000)
+      // console.log('zebrak');
+      // console.log('navi' + JSON.stringify(navigator.geolocation));
+      if (navigator.geolocation){
+        this.interval = window.setInterval(() => {
+          var options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+          };
+          navigator.geolocation.getCurrentPosition(this.updatePlayerPosition,this.errornotify,options)
+        }, 6000)
             // navigator.geolocation.watchPosition(this.updatePlayerPosition)
-          }else{
-            console.log('navi' + JSON.stringify(navigator.geolocation));
-            
-          }
+      }else{
+        // console.log('navi' + JSON.stringify(navigator.geolocation));
+        this.errornotify('GPS init','NOT AVAILABLE')
+      }
     } else {
-      console.log('alert '+this.alert)
+      // console.log('alert '+this.alert)
       this.alert = true;
     }
     
@@ -233,54 +202,130 @@ export default {
   },
   methods : {
 
-    buyProd(product, shopId){
-      var gameId = this.game.id
-      var playerId = this.player_id
-      this.$axios.get('/buy-product', {
-        params : {
-          game_id : gameId,
-          player_id : playerId,
-          shop_id : shopId,
-          product_id : product.id,
-        }
-      }).then((response)=>{
-        this.$store.dispatch('global/buyProduct',product)
-        .then(()=>{
-          this.$store.dispatch('global/updateMoney',response.data).then(()=>{
-            this.positnotify(product.name + "zakupeny")
-          })
-        }).catch((e)=>{
-          this.errornotify('BUY','NO MONEY')
-        })
-      }).catch((e)=>{
-        this.errornotify('/buy-product',e)
-      })
+     getNow() {
+      const today = new Date();
+      // const date = +'-'+(today.getMonth()+1)+'-'+today.getDate();
+      // const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      var obj = {
+        year : today.getFullYear(),
+        month : today.getMonth()+1,
+        day : today.getDate(),
+        hour : today.getHours(),
+        minute : today.getMinutes(),
+        seconds : today.getSeconds(),
+      }
 
+      this.timestamp = obj;
+      // console.log('time '+ JSON.stringify(this.timestamp))
     },
 
-    sellProd(product, shopId){
-      var gameId = this.game.id
-      var playerId = this.player_id
-      this.$axios.get('/sell-product', {
-        params : {
-          game_id : gameId,
-          player_id : playerId,
-          shop_id : shopId,
-          product_id : product.id,
-        }
-      }).then((response)=>{
-        this.$store.dispatch('sell/buyProduct',product)
-        .then(()=>{
-          this.$store.dispatch('global/updateMoney',response.data).then(()=>{
-            this.positnotify(product.name + "zakupeny")
-          })
-        }).catch(()=>{
-          this.errornotify('SELL','NO PRODUCT')
+    checkEnd(){
+      var e = this.game.finished_at
+      var t = this.timestamp
+      var end = new Date(e.year, e.monthValue, e.dayOfMonth, e.hour, e.minute, e.second)
+      var now = new Date(t.year, t.month, t.day, t.hour, t.minute, t.seconds)
+      if (end < now){
+        this.isEnd = true
+      }
+      // this.isEnd = true;
+      if (this.isEnd){
+        window.clearInterval(this.interval)
+        this.$axios.get('/get-players-score',{
+          params : {
+            game_id : this.game.id
+          }
+        }).then((response)=>{
+          // console.log('players[0] ' + JSON.stringify(response.data[0]) + " player_id" + this.player_id)
+          if (response.data[0].playerId === this.player_id){
+            this.message = "Vyhral si!"
+            this.subtitle = "“If it ain’t making me money, making me better or making me happy… ain’t making time for it.” – 50 Cent"
+          } else {
+            this.message = "Prehral si :'("
+            this.subtitle = "“If you don't use your time, the time uses you, as a result; you are the loser”― Ehsan Sehgal"
+          }
         })
-      }).catch((e)=>{
-          this.errornotify('/sell-product',e)
+      }
+      
+    },
+
+    buyProd(product,shopId){
+      if (product.count == 0){
+        return
+      }
+      this.loadingBuy = true;
+      // console.log('buy prod'+ JSON.stringify(product) + ' in shop ' + shopId);
+      // this.positnotify('buy prod'+ JSON.stringify(product) + ' in shop ' + shopId)
+      this.$store.dispatch('global/buyProduct',product)
+      .then((money)=>{
+        
+        this.$axios('/buy-product',{
+        params :{
+          game_id : this.game.id,
+          player_id  : this.player_id,
+          shop_id : shopId,
+          product_id : product.id
+        }
+        }).then((response)=>{
+
+          this.loadShop(shopId)
+          .then(()=>{
+            this.positnotify('OK')
+            // console.log('buy prod new money '+ JSON.stringify(money))
+            this.loadingBuy = false     
+          }).catch(()=>{
+            this.errornotify('/buy-product',"couldn't load shop")
+            this.loadingBuy = false     
+          })
+
+        }).catch((e)=>{
+          this.errornotify('/buy-product',e)
+          this.loadingBuy = false     
         })
 
+      }).catch((e)=>{
+        this.errornotify('global/buyProduct',e)
+        // console.log('buy prod global/buyProduct' + e + ' ' + JSON.stringify(money))
+        this.loadingBuy = false     
+      })
+      
+    },
+
+    sellProd(product,shopId){
+        this.loadingSell = true,
+        // console.log('sell prod'+ JSON.stringify(product) + ' in shop ' + shopId);
+        // this.positnotify('sell prod'+ JSON.stringify(product) + ' in shop ' + shopId)
+        this.$store.dispatch('global/sellProduct',product).then((money)=>{
+          
+          this.$axios.get('/sell-product',{
+                          params : {
+                            game_id : this.game.id,
+                            player_id  : this.player_id,
+                            shop_id : shopId,
+                            product_id : product.id
+                          }
+          }).then((response)=>{
+
+            this.loadShop(shopId)
+            .then(()=>{
+              this.positnotify('OK')
+              // console.log('sell prod new money '+ JSON.stringify(money))
+              this.loadingSell = false
+            }).catch(()=>{
+              this.errornotify('/sell-product',"couldn't load shop")
+              this.loadingSell = false
+            })
+
+          }).catch((e)=>{
+            this.errornotify('/sell-product',e)
+            this.loadingSell = false
+          })
+
+        }).catch((e)=>{
+          this.errornotify('global/sellProduct',e)
+          // console.log('buy prod global/sellProduct ' + e)
+          this.loadingSell = false
+        })
+        
     },
 
     positnotify(message){
@@ -327,28 +372,34 @@ export default {
     },
 
     loadShop(id){
-      this.$axios.get('/get-shop-products',{
-        params : {
-          shop_id : id
-        }
-      }).then((response)=>{
-        console.log('SHOP PRODUCTS '+JSON.stringify(response.data));
-        this.shopProducts = response.data
-        console.log('THIS PRODUCTS '+ JSON.stringify(this.shopProducts));
-        this.showShop = true;
-      }).catch((e) => {
-        this.errornotify('/get-shop-products',e)
+      return new Promise ((resolve, reject)=>{
+        setTimeout(()=>{
+          this.$axios.get('/get-shop-products',{
+              params : {
+                shop_id : id
+              }
+            }).then((response)=>{
+              // console.log('SHOP PRODUCTS '+JSON.stringify(response.data));
+              this.shopProducts = response.data
+              // console.log('THIS PRODUCTS '+ JSON.stringify(this.shopProducts));
+              this.showShop = true;
+              resolve()
+            }).catch((e) => {
+              this.errornotify('/get-shop-products',e)
+              reject()
+            })
+        },100)
       })
     },
 
     nearestShop(){
       var shops = this.game.shops;
-      console.log('shops ' + JSON.stringify(shops));
+      // console.log('shops ' + JSON.stringify(shops));
       var min = {dist: 2000};
       for (var i = 0; i < this.game.num_shops; i++) {
         var e = shops[i]
         var dist = this.realDistance(e.latitude, e.longitude, this.position.latitude, this.position.longitude);
-        console.log('dist ' + dist )
+        // console.log('dist ' + dist )
         if ( dist < min.dist){
           min = e;
           min.dist = dist;
@@ -356,7 +407,7 @@ export default {
       };
 
       min.dist = 20
-      console.log(' WARNING HARD-CODED nearest dist ' + min.dist )
+      // console.log(' WARNING HARD-CODED nearest dist ' + min.dist )
 
       if (min.dist < 25){
         this.nearest = min;
@@ -366,7 +417,7 @@ export default {
 
     getPosition(){
       if (this.game.active){
-          console.log('position update');
+          // console.log('position update');
           if (this.plus){
             this.position.latitude += Math.random() *0.001;
             this.position.longitude += Math.random() *0.001;
@@ -374,7 +425,7 @@ export default {
             this.position.latitude -= Math.random() *0.001;
             this.position.longitude -= Math.random() *0.001;
           }
-          console.log('navi' + JSON.stringify(navigator.geolocation));
+          // console.log('navi' + JSON.stringify(navigator.geolocation));
           if (navigator.geolocation){
             navigator.geolocation.getCurrentPosition(this.updatePlayerPosition)
           }else{
@@ -387,7 +438,7 @@ export default {
     //[0,0] je vlavo hore
     calcBounds(){
       var shops = this.game.shops
-      console.log('obchody' + JSON.stringify(shops));
+      // console.log('obchody' + JSON.stringify(shops));
         for (var i = 0; i < this.game.num_shops; i++) {
           // var dist = calcDist(shops[i].longitude,shops[i].latitude, this.game.gps.longitude,this.game.gps.latitude)
           var x_dist = this.calcDist(shops[i].longitude, this.game.gps.longitude)
@@ -416,7 +467,7 @@ export default {
       if (this.x_min_dist == null){
         this.calcBounds()
       }
-      console.log('calc pos')
+      // console.log('calc pos')
 
       var width = document.getElementById('map').clientWidth;
       var height = document.getElementById('map').clientHeight;
@@ -432,12 +483,12 @@ export default {
       var x1_inter = bot + (x_dist - this.x_min_dist)/(this.x_interval/(top-bot));
       var y1_inter = bot + (y_dist - this.y_min_dist)/(this.y_interval/(top-bot));
       //previest do suradnicoveho systemu
-      console.log('calc pos'+ JSON.stringify({x: x1_inter*width, y: y1_inter*height}))
+      // console.log('calc pos'+ JSON.stringify({x: x1_inter*width, y: y1_inter*height}))
       return {x: x1_inter*width, y: y1_inter*height}
     },
 
     updatePlayerPosition(position){
-      console.log('player: '+ position.coords.latitude +" | "+position.coords.longitude);
+      // console.log('player: '+ position.coords.latitude +" | "+position.coords.longitude);
       
       
       var pos = this.calcPosOnMap(position.coords.latitude,position.coords.longitude);
@@ -458,7 +509,7 @@ export default {
     },
 
     updateObjPosition(bitmap,pos){
-      console.log('act pos'+JSON.stringify(pos))
+      // console.log('act pos'+JSON.stringify(pos))
       bitmap.x = pos.x-bitmap.scaleX/2;
       bitmap.y = pos.y-bitmap.scaleY/2;
     },
@@ -485,9 +536,9 @@ export default {
 
     var doge = new Image();
     doge.src = "statics/game/shop.svg"; 
-    console.log('ahoj');
+    // console.log('ahoj');
     for (var i = 0; i < this.game.num_shops; i++) {
-      console.log('pos '+ i)
+      // console.log('pos '+ i)
       var bitmap = new createjs.Bitmap(doge);
 
       //compute position on map from center
@@ -495,7 +546,7 @@ export default {
       this.setObjPosition(bitmap,pos);
       this.stage.addChild(bitmap);
     }
-    console.log('my position')
+    // console.log('my position')
     var me = new Image();
     me.src = "statics/game/location.svg"; 
     var bitmap = new createjs.Bitmap(me);

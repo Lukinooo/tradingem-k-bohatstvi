@@ -4,26 +4,36 @@ export function addToInv (state, product){
         name : product.name,
         num : 1,
     })
-    state.game.money -= num*price;
+    state.game.money -= product.price;
 }
 
 export function buyProd (state, {id,price}) {
     state.inventory.forEach(element => {
         if (element.id === id){
             element.num += 1;
-            state.game.money -= price;
+            state.game.money -= parseFloat(price);
             return
         }
     });
 }
 
 export function sellProd (state, {id, price}) {
+    console.log('sell price ' + price);
+    
     state.inventory.forEach(element => {
         if (element.id === id){
-            element.num -= 1;
+            if (element.num === 0){
+                return
+            }
+            console.log('sell one id' + id +' comp ' + element.id);
+            element.num = element.num - 1;
+            console.log('sell money before' + JSON.stringify(state.game.money));
+            state.game.money = parseFloat(state.game.money) +  parseFloat(price,10);
+            console.log('sell money after' + JSON.stringify(state.game.money));
+            return
         }
     });
-    state.game.money += price;
+    
 }
 
 export function name (state, name){
@@ -96,5 +106,10 @@ export function shops(state, shops){
 }
 
 export function playerId(state,id){
+    console.log('COMMIT before join id' + id +' store ' + state.game.player_id);
+    
+    state.player_id = id
     state.game.player_id = id
+
+    console.log('COMMIT after join id' + id +' store ' + state.game.player_id);
 }

@@ -71,7 +71,7 @@ export default {
     func(params) {
       this.$store.dispatch("global/buyProducts", this.products);
       this.count++;
-      console.log(this.products);
+      //console.log(this.products);
     }
   },
   computed: {
