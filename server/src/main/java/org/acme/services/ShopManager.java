@@ -38,7 +38,7 @@ public class ShopManager {
      * @param game object for which the shops are generated
      */
     public void initializeShops(Game game) {
-        logger.info("initializeShops: Create" + game.getMax_shops() + "new shops in radius " + game.getRadius() + " into game with " + game.getId());
+        logger.info("initializeShops: Create " + game.getMax_shops() + " new Shops in radius " + game.getRadius() + " into Game with " + game.getId());
         ShopPersist sp = new ShopPersist(em);
         ProductPersistence pp = new ProductPersistence(em);
 
@@ -72,12 +72,16 @@ public class ShopManager {
 
             sp.create(shop);
             shops.add(shop);
+            logger.info("initializeShops: Shop created");
         }
         game.setShops(shops);
+
+        logger.info("initializeShops: Shops for Game with id " + game.getId() + " were created");
     }
 
     /**
-     * Function which gets all products dtored in the database
+
+     * Function which gets all products stored in the database
      *
      * @param em entity manager for hibernate
      * @return List of all products from database
@@ -97,7 +101,7 @@ public class ShopManager {
      * @return json string with all products for the shop
      */
     public String getShopProducts(String shopId) {
-        logger.info("getShopProducts: Get all shop products for shop with shop id" + shopId);
+        logger.info("getShopProducts: Get all shop Products for Shop with shop id " + shopId);
         Jedis jedis = new Jedis("localhost", 6379);
         Map<String, String> products = jedis.hgetAll("obchod:" + shopId + ":produkty");
 
@@ -121,6 +125,9 @@ public class ShopManager {
         }
 
         formated = arrayNode.toString();
+
+        logger.info("getShopProducts: All shop Products from Shop with id " + shopId + " are returned");
+
         return formated;
     }
 
@@ -131,7 +138,7 @@ public class ShopManager {
      * @return list of all shops with equal game id as given
      */
     public List getAllShop(String gameId) {
-        logger.info("getAllShop: Get all shop for game with game id" + gameId);
+        logger.info("getAllShop: Get all shop for game with game id " + gameId);
         ShopPersist shopPersist = new ShopPersist(em);
         List<Shop> shops = shopPersist.getAllById(Long.parseLong(gameId));
         return shops;
@@ -149,7 +156,7 @@ public class ShopManager {
      * @param initialCount quantity of products in the shops
      */
     public void initializeProducts(Game game, int initialCount) {
-        logger.info("initializeProducts: Initialize products in shops for game with id " + game.getId() + " in count " + initialCount);
+        logger.info("initializeProducts: Initialize Products in Shops for Game with id " + game.getId() + " in count " + initialCount);
         ShopPersist shopPersist = new ShopPersist(em);
         List<Shop> shops = shopPersist.getAllById(game);
         List<Object> products = getProducts(em);
@@ -161,6 +168,8 @@ public class ShopManager {
         for (Shop shop : shops) {
             Set<Integer> indexes = randomGenerated(initialCount, products.size());
 
+            logger.info("initializeProducts: Initialize Products in Shop with id " + shop.getId());
+
             for (Integer index : indexes) {
                 Product prod = (Product) products.get(index);
 
@@ -169,6 +178,8 @@ public class ShopManager {
                 jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()) + ":" + String.valueOf(prod.getName()), prod.getPriceCategory().getId() + ":" + price + ":" + initialCount);
             }
         }
+
+        logger.info("initializeProducts: Products initializes");
     }
 
     /**
@@ -214,6 +225,9 @@ public class ShopManager {
         ProductPersistence productPersistence = new ProductPersistence(em);
         Product product = (Product) productPersistence.get(Long.parseLong(productId));
         Float price = gameMechanic.checkPrice(shopId, productId, product.getName());
+
+        logger.info("buyProduct: Product " + product.getName() + " price is" + price);
+
         if (price == (float) 0.0) {
             return "0";
         }
@@ -235,6 +249,8 @@ public class ShopManager {
             money -= price;
 
             player = playerManager.updatePlayerScore(gameId, playerId, money);
+
+            logger.info("buyProduct: Player is buying");
 
             return String.valueOf(money);
         } else {
@@ -266,6 +282,8 @@ public class ShopManager {
         Product product = (Product) productPersistence.get(Long.parseLong(productId));
         Float price = gameMechanic.checkPrice(shopId, productId, product.getName());
 
+        logger.info("sellProduct: Product " + product.getName() + " price is" + price);
+
         if (gameMechanic.checkFinancial(gameId, player, price)) {
             price = gameMechanic.sellProduct(gameId, playerId, shopId, productId, product.getName());
             PlayerManager playerManager = new PlayerManager(em);
@@ -283,6 +301,8 @@ public class ShopManager {
             money += price;
 
             player = playerManager.updatePlayerScore(gameId, playerId, money);
+
+            logger.info("sellProduct: Player is selling");
 
             return String.valueOf(money);
         } else {
