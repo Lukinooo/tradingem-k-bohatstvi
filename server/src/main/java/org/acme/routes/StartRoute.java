@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.acme.models.Game;
+import org.codehaus.jackson.node.ObjectNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -98,16 +99,15 @@ public class StartRoute {
     @Path("game-setting")
     @Transactional
     public String getGameSettings() {
-        StringBuilder config_value = new StringBuilder();
-        config_value.append("{\n")
-                .append("color: \"").append(gameConfig.color).append("\",\n")
-                .append("max_players: ").append(gameConfig.players).append(",\n")
-                .append("max_shops: ").append(gameConfig.shops).append(",\n")
-                .append("max_products: ").append(gameConfig.products).append(",\n")
-                .append("radius: ").append(gameConfig.radius).append(",\n")
-                .append("player_money: ").append(gameConfig.player_money).append("\n}");
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("color", gameConfig.color);
+        objectNode.put("max_players", Integer.parseInt(String.valueOf(gameConfig.players)));
+        objectNode.put("max_shops", Integer.parseInt(String.valueOf(gameConfig.shops)));
+        objectNode.put("radius", Float.parseFloat(String.valueOf(gameConfig.radius)));
+        objectNode.put("max_products", Integer.parseInt(String.valueOf(gameConfig.products)));
+        objectNode.put("player_money", Float.parseFloat(String.valueOf(gameConfig.player_money)));
 
-        return config_value.toString();
+        return objectNode.toString();
     }
 
 }
