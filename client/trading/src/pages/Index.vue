@@ -1,9 +1,11 @@
 <template>
   <q-page>
     <q-img class="top q-pa-none" src="statics/stats.jpg" 
-    srcset="statics/stats.jpg,
-                statics/stats2.jpg  1.5x,"
-    style="height: 150px" >
+      srcset="statics/stats.jpg 767w,
+              statics/stats2.jpg  1920w,"
+      sizes="(max-width: 767px) 767px,
+              1920px"
+      style="height: 150px" >
       <div class="absolute-bottom text-center col">
 
         <div class="text-center row no-wrap justify-center items-center">
@@ -69,7 +71,7 @@ export default {
     func(params) {
       this.$store.dispatch("global/buyProducts", this.products);
       this.count++;
-      console.log(this.products);
+      //console.log(this.products);
     }
   },
   computed: {

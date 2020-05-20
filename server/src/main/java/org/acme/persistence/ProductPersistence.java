@@ -43,6 +43,10 @@ public class ProductPersistence implements PersistenceLayer{
         return product.getId();
     }
 
+    /**
+     * Function gets all products stored in the database
+     * @return all products from the database
+     */
     @Override
     public List<Object> getAll() {
         Query query = em.createQuery("SELECT p FROM Product p");

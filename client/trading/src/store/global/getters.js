@@ -11,5 +11,6 @@ export function nick (state) {
 }
 
 export function player_id(state){
+    console.log('GETTERS join player_id ' + state.player_id)
     return state.player_id
 }

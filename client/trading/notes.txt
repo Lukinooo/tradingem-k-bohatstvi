@@ -99,26 +99,27 @@ form
 
 
 ROUTES
-  get-start-time        NOT USED
-  get-end-time          NOT USED
-  update-player-money   
+  get-start-time        NOT USED - dostanem spolu s hrou
+  get-end-time          NOT USED - dostanem spolu s hrou
+  update-player-money   NOT USED - pocitam si sam
     game_id
     player_id
     money
-  get-players-score
+  get-players-score     OK
     su peniaze vsetkych hracov - rebricek
-  get-player-score
+  get-player-score      OK - zobrazujem si niekedy
     su moje peniaze
   create-game           OK
   join-game             OK
   list-games            OK
-  game-settings         NOT USED
-  get-shops
-  get-shop
-  get-shop-products
+  game-settings         NOT USED - mam vlastne defaults
+  get-shops             NOT USED - DOSTANEM SPOLU S HROU
+  get-shop              NOT USED
+  get-shop-products     OK - PRE NAJBLIZSI OBCHOD
     ked vojdem do obchodu
-  buy-product
+  buy-product           OK - peniaze a osetrenia si robim sam
     vrati peniaze
-  sell-product
+    nevracia cash, pocitam si sam
+  sell-product          OK - peniaze a osetrenia si robim sam
     vrati peniaze
-
+    nevracia, pocitam si sam
