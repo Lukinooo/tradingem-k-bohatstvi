@@ -17,9 +17,11 @@ import redis.clients.jedis.Jedis;
 import javax.persistence.EntityManager;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.logging.Logger;
 
 public class ShopManager {
     private EntityManager em;
+    public Logger logger = Logger.getLogger("/logs/logger.log");
 
     public ShopManager(EntityManager em) {
         this.em = em;
@@ -35,6 +37,7 @@ public class ShopManager {
      * @param game object for which the shops are generated
      */
     public void initializeShops(Game game) {
+        logger.info("initializeShops: Create" + game.getMax_shops() + "new shops in radius " + game.getRadius() + " into game with " + game.getId());
         ShopPersist sp = new ShopPersist(em);
         ProductPersistence pp = new ProductPersistence(em);
 
@@ -78,6 +81,7 @@ public class ShopManager {
      * @return List of all products from database
      */
     public List getProducts(EntityManager em) {
+        logger.info("getProducts: Get all products stored in the database");
         ProductPersistence pp = new ProductPersistence(em);
         return pp.getAll();
     }
@@ -90,6 +94,7 @@ public class ShopManager {
      * @return json string with all products for the shop
      */
     public String getShopProducts(String shopId) {
+        logger.info("getShopProducts: Get all shop products for shop with shop id" + shopId);
         Jedis jedis = new Jedis("localhost", 6379);
         Map<String, String> products =  jedis.hgetAll("obchod:" + shopId + ":produkty");
 
@@ -122,6 +127,7 @@ public class ShopManager {
      * @return list of all shops with equal game id as given
      */
     public List getAllShop(String gameId) {
+        logger.info("getAllShop: Get all shop for game with game id" + gameId);
         ShopPersist shopPersist = new ShopPersist(em);
         List<Shop> shops = shopPersist.getAllById(Long.parseLong(gameId));
         return shops;
@@ -138,6 +144,7 @@ public class ShopManager {
      * @param initialCount quantity of products in the shops
      */
     public void initializeProducts(Game game, int initialCount) {
+        logger.info("initializeProducts: Initialize products in shops for game with id " + game.getId() + " in count " + initialCount);
         ShopPersist shopPersist = new ShopPersist(em);
         List<Shop> shops = shopPersist.getAllById(game);
         List<Object> products = getProducts(em);
@@ -191,6 +198,7 @@ public class ShopManager {
      * @return price of the product, which was bought or 0 if player dont have money
      */
     public String buyProduct(String gameId, String playerId, String shopId, String productId) {
+        logger.info("buyProduct: Player with id " + playerId + " wants to buy product with id " + productId + " in shop with id " + shopId + " in game with id " + gameId);
         GameMechanic gameMechanic = new GameMechanic();
 
         PlayerPersist playerPersist = new PlayerPersist(em);
@@ -241,6 +249,7 @@ public class ShopManager {
      * @return price of the product, which was bought or 0 if player dont have money
      */
     public String sellProduct(String gameId, String playerId, String shopId, String productId) {
+        logger.info("sellProduct: Player with id " + playerId + " wants to sell product with id " + productId + " in shop with id " + shopId + " in game with id " + gameId);
         GameMechanic gameMechanic = new GameMechanic();
 
         PlayerPersist playerPersist = new PlayerPersist(em);

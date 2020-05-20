@@ -8,10 +8,12 @@ import org.acme.persistence.GamePersist;
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Logger;
 
 
 public class GameManager {
     private EntityManager em;
+    public Logger logger = Logger.getLogger("/logs/logger.log");
 
     public GameManager(EntityManager em) {
         this.em = em;
