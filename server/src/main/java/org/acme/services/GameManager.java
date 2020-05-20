@@ -51,10 +51,11 @@ public class GameManager {
         StringBuilder result = new StringBuilder();
         result.append("{\n\"playerId\": \"").append(player.getId()).append("\", ")
                 .append("\"gameId\": \"").append(game.getId()).append("\", ")
-                .append("\"status\": \"")
-                .append(player.getName())
-                .append("\" joined into game ")
-                .append(game.getName()).append("\n}");
+                .append("\"status\": \"").append("ok\"")
+//                .append(player.getName()).append(" joined into game \"")
+//                .append("\" joined into game ")
+//                .append(game.getName())
+                .append("\n}");
         return result.toString();
     }
 

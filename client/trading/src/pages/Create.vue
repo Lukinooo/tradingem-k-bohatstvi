@@ -77,7 +77,7 @@
               lazy-rules
             /> 
 
-          </q-input>
+          <!-- </q-input> -->
             <q-input
               clearable
           v-model= "duration"
@@ -128,10 +128,17 @@ export default {
           shops: null,
     }
   },
+
+  computed: {
+    game(){
+      return this.$store.getters['global/game']
+    }
+  },
+
   methods: {
 
     updatePosition(position){
-      console.log('update');
+      //console.log('update');
       this.longitude_center = position.coords.longitude
       this.latitude_center = position.coords.latitude
       this.safeSubmit()
@@ -147,9 +154,11 @@ export default {
     },
 
     safeSubmit(){
-      console.log('safe');
-      console.log('send ' +this.longitude_center),
-      console.log('color' + this.color),
+      //console.log('safe');
+      //console.log('send ' +this.longitude_center),
+      //console.log('color' + this.color),
+      //console.log('SAFE SUBMIT '+ this.num_players);
+      
         this.$axios.get('/create-game', {
           params: {
             max_players: this.num_players,
@@ -169,7 +178,8 @@ export default {
           this.created_at = data.created_at;
           this.finished_at = data.finished_at;
           this.id = data.id;
-          console.log('som pred initom');
+          //console.log('SAFE SUBMIT after create before init'+ this.num_players + ' store ' + this.$store.getters['global/game'].num_players );
+          //console.log('som pred initom');
             this.$store.dispatch('global/initGame',data).then(() => {
                 this.$axios.get('/join-game', {
                   params : {
@@ -177,7 +187,9 @@ export default {
                     game_id : this.$store.getters['global/game'].id 
                   }
                 }).then((response)=> {
+                  
                   this.$store.dispatch('global/join',response.data).then(()=>{
+                    //console.log('SAFE SUBMIT after init after join data'+ this.num_players + ' store ' + this.$store.getters['global/game'].num_players);
                     this.$q.notify({
                     color: "green-4",
                     textColor: "white",
@@ -186,10 +198,9 @@ export default {
                     }),
                     this.$router.push('/game')
                   })
-                } 
-                  
-              
-              )  
+                }).catch((e)=>{
+                  this.errornotify('/join-game',e)
+                })  
             })
         })
       .catch((e) => {
@@ -199,12 +210,12 @@ export default {
     },
 
     getLocation(){
-      console.log('click');
+      //console.log('click');
 
       if (navigator.geolocation){
-        console.log('geo');
+        //console.log('geo');
         navigator.geolocation.getCurrentPosition(this.updatePosition)
-        console.log('geo end');
+        //console.log('geo end');
       } else {
         this.$q.notify({
           color: 'negative',
@@ -218,29 +229,38 @@ export default {
 
     onSubmit() {
       //send to server
-      console.log('click');
+      //console.log('click');
       
       this.getLocation()     
     },
     onReset() {
-      this.name = this.$store.getters["global/game"].name,
-      this.radius = this.$store.getters["global/game"].radius,
-      this.color= this.$store.getters["global/game"].color,
-      this.num_players= this.$store.getters["global/game"].num_players,
-      this.num_shops= this.$store.getters["global/game"].num_shops,
-      this.num_products= this.$store.getters["global/game"].num_products,
-      this.money= this.$store.getters["global/game"].money,
-      this.duration = this.$store.getters["global/game"].duration,
+      // this.name = this.$store.getters["global/game"].name,
+      // this.radius = this.$store.getters["global/game"].radius,
+      // this.color= this.$store.getters["global/game"].color,
+      // this.num_players= this.$store.getters["global/game"].num_players,
+      // this.num_shops= this.$store.getters["global/game"].num_shops,
+      // this.num_products= this.$store.getters["global/game"].num_products,
+      // this.money= this.$store.getters["global/game"].money,
+      // this.duration = this.$store.getters["global/game"].duration,
+      this.name = this.game.name,
+      this.radius = this.game.radius,
+      this.color= this.game.color,
+      this.num_players= this.game.num_players,
+      //console.log('players ' + this.num_players);
+      this.num_shops= this.game.num_shops,
+      this.num_products= this.game.num_products,
+      this.money= this.game.money,
+      this.duration = this.game.duration,
       this.longitude_center = null,
       this.latitude_center = null,
-      this.accept= false,
-      console.log('name ' + this.name)
+      this.accept= false
+      //console.log('name ' + this.name)
     }
   },
 
   mounted: function() {
     this.onReset()
-    console.log('long '+this.longitude_center)
+    //console.log('long '+this.longitude_center)
   },
 
 };
