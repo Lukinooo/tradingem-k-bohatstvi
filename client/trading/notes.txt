@@ -105,20 +105,20 @@ ROUTES
     game_id
     player_id
     money
-  get-players-score
+  get-players-score     OK
     su peniaze vsetkych hracov - rebricek
-  get-player-score
+  get-player-score      LEN PRI ZOBRAZOVANI V OBCHODE ZATIAL
     su moje peniaze
   create-game           OK
   join-game             OK
   list-games            OK
   game-settings         NOT USED
-  get-shops
-  get-shop
-  get-shop-products
+  get-shops             NOT USED - DOSTANEM SPOLU S HROU
+  get-shop              NOT USED
+  get-shop-products     OK - PRE NAJBLIZSI OBCHOD
     ked vojdem do obchodu
-  buy-product
+  buy-product           
     vrati peniaze
-  sell-product
+  sell-product          
     vrati peniaze
-
+PORIESIT NICK KED SA ZMENI NA NAZOV HRY

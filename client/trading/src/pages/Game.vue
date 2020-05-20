@@ -41,20 +41,22 @@
                 <q-item  class="full-width column items-center content-center"
                 v-for="p in shopProducts" :key="p.id" 
                 >  
-                    <q-item class="full-width row no-wrap justify-between q-px-none " style="max-width: 600px;">  
-                      <q-item-section class="q-px-none text-left col-2">{{p.name}}</q-item-section>
-                      <q-item-section class="q-px-none text-center col-2">{{p.price}} €</q-item-section>
-                      <q-item-section class="q-px-none text-center col-2">{{p.count}}</q-item-section>
-                    </q-item>
-                    <q-item-section class="row">
-                      <q-item-section class="q-px-none text-center col-5">
-                      <q-btn-group push>
-                          <q-btn push label="Nákup" icon="cloud_download" />
-                          <q-btn push label="Predaj" icon="cloud_upload" />
-                        </q-btn-group>
-                      </q-item-section>
+
+                  <q-item class="full-width row no-wrap justify-between q-px-none " style="max-width: 600px;">  
+                    <q-item-section class="q-px-none text-left col-2">{{p.name}}</q-item-section>
+                    <q-item-section class="q-px-none text-center col-2">{{p.price}} €</q-item-section>
+                    <q-item-section class="q-px-none text-center col-2">{{p.count}}</q-item-section>
+                  </q-item>
+                  <q-item-section class="row">
+                    <q-item-section class="q-px-none text-center col-5">
+                    <q-btn-group push>
+                        <q-btn push label="Nákup" icon="cloud_download" @click="buyProd(p, nearest.id)"/>
+                        <q-btn push label="Predaj" icon="cloud_upload" @click="sellProd(p,nearest.id)"/>
+                      </q-btn-group>
                     </q-item-section>
-                    <hr style="width:90%">
+                  </q-item-section>
+                  <hr style="width:90%">
+
                 </q-item>
               </q-scroll-area>
             </q-list>
@@ -194,6 +196,9 @@ export default {
       money(){
         return this.$store.getters['global/game'].money
       },
+      player_id(){
+        return this.$store.getters['global/player_id']
+      }
       // shopProducts(){
       //   return { '0' : 0}
       // },
@@ -227,6 +232,66 @@ export default {
     
   },
   methods : {
+
+    buyProd(product, shopId){
+      var gameId = this.game.id
+      var playerId = this.player_id
+      this.$axios.get('/buy-product', {
+        params : {
+          game_id : gameId,
+          player_id : playerId,
+          shop_id : shopId,
+          product_id : product.id,
+        }
+      }).then((response)=>{
+        this.$store.dispatch('global/buyProduct',product)
+        .then(()=>{
+          this.$store.dispatch('global/updateMoney',response.data).then(()=>{
+            this.positnotify(product.name + "zakupeny")
+          })
+        }).catch((e)=>{
+          this.errornotify('BUY','NO MONEY')
+        })
+      }).catch((e)=>{
+        this.errornotify('/buy-product',e)
+      })
+
+    },
+
+    sellProd(product, shopId){
+      var gameId = this.game.id
+      var playerId = this.player_id
+      this.$axios.get('/sell-product', {
+        params : {
+          game_id : gameId,
+          player_id : playerId,
+          shop_id : shopId,
+          product_id : product.id,
+        }
+      }).then((response)=>{
+        this.$store.dispatch('sell/buyProduct',product)
+        .then(()=>{
+          this.$store.dispatch('global/updateMoney',response.data).then(()=>{
+            this.positnotify(product.name + "zakupeny")
+          })
+        }).catch(()=>{
+          this.errornotify('SELL','NO PRODUCT')
+        })
+      }).catch((e)=>{
+          this.errornotify('/sell-product',e)
+        })
+
+    },
+
+    positnotify(message){
+          this.$q.notify({
+          color: 'positive',
+          position: 'top',
+          message: message,
+          icon: 'done'
+        })
+    },
+
     errornotify(place = 'gps', error){
           this.$q.notify({
           color: 'negative',

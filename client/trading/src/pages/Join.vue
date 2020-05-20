@@ -143,11 +143,11 @@ export default {
         })
         
       })
-      .catch(() => {
+      .catch((e) => {
         this.$q.notify({
           color: 'negative',
           position: 'top',
-          message: 'Problém s pripojením',
+          message: 'Problém s pripojením' + e,
           icon: 'report_problem'
         })
       })

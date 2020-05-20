@@ -1,36 +1,36 @@
-export function addToInv (state, {name,num,price}){
-    if (state.money < num*price){
-        return;
-    }
+export function addToInv (state, product){
     state.inventory.push({
-        name: name,
-        num: num,
+        id : product.id,
+        name : product.name,
+        num : 1,
     })
     state.game.money -= num*price;
 }
 
-export function buyProd (state, {name,num,price}) {
-    if (state.money < num*price){
-        return;
-    }
+export function buyProd (state, {id,price}) {
     state.inventory.forEach(element => {
-        if (element.name === name){
-            element.num += num;
+        if (element.id === id){
+            element.num += 1;
+            state.game.money -= price;
+            return
         }
     });
-    state.game.money -= num*price;
 }
 
-export function sellProd (state, {name, num, price}) {
+export function sellProd (state, {id, price}) {
     state.inventory.forEach(element => {
-        if (element.name === name){
-            element.num -= num;
+        if (element.id === id){
+            element.num -= 1;
         }
     });
-    state.game.money += num*price;
+    state.game.money += price;
 }
 
 export function name (state, name){
+    state.game.name = name;
+}
+
+export function nick (state, name){
     state.nick = name;
 }
 
@@ -84,7 +84,7 @@ export function color(state, color){
 }
 
 export function num_players(state, num){
-    state.game.num_players = num_players
+    state.game.num_players = num
 }
 
 export function duration(state, duration){

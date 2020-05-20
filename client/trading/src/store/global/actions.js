@@ -3,51 +3,66 @@
 
 import { money } from "./mutations";
 
-export function change (state,name){
-    state.commit('changeName',name)
-    // console.log(state.nick);
-}
-
-export function buyProducts (state,products){
+export function buyProduct (state,product){
     return new Promise ((resolve, reject) => {
         setTimeout(()=> {
-            products.forEach( p => {
-                var found = false;
-                console.log('s ' + JSON.stringify(state) + 'prods '+products + 'inv '+ state.inventory)
-                state.getters.inventory.forEach( s => {
-                    if (s.name === p.name){
-                        state.commit('buyProd',p)
-                        // s.num += p.num;
-                        found = true;
-                    }
-                })
-                if (!found){
-                    state.commit('addToInv',p)
+            var found = false;
+
+            console.log('s ' + JSON.stringify(state) + 'prods '+product + 'inv '+ state.inventory)
+            
+            if (state.getters.money < price){
+                reject()
+            }
+
+            state.getters.inventory.forEach( s => {
+                if (s.id === product.id){
+                    state.commit('buyProd',product)
+                    // s.num += p.num;
+                    found = true;
                 }
             })
+
+            if (!found){
+                state.commit('addToInv',product)
+            }
+
             resolve(state.getters['global/game'].money) 
         },1000)
     })
     
 }
 
-export function sellProducts (state, products){
+export function sellProduct (state, product){
     return new Promise ((resolve, reject) => {
         setTimeout(()=> {
-            products.forEach( p => {
-                var found = false;
-                state.inventory.forEach( s => {
-                    if (s.name === p.name){
-                        state.commit('sellProd',p)
-                        // s.num -= p.num;
-                        found = true;
-                    }
-                })
+
+            var found = false;
+
+            state.inventory.forEach( s => {
+                if (s.id === product.id){
+                    state.commit('sellProd',product)
+                    // s.num -= p.num;
+                    found = true;
+                }
             })
-            resolve(state.getters(money))
+
+            if (!found){
+                reject()
+            }
+
+            resolve(state.getters['global/game'].money)
         },1000)
     })
      
+}
+
+export function updateMoney(state, money){
+    return new Promise((resolve,reject)=>{
+        setTimeout(()=>{
+            state.commit('money',money)
+            resolve()
+        })
+    })
 }
 
 export function join(state, data){
@@ -79,7 +94,9 @@ export function initGame(state, data){
             state.commit('radius',data.radius);
             state.commit('num_shops',data.max_shops);
             state.commit('color',data.color)
+            console.log('INIT before data '+data.max_player+' state '+state.getters['num_players'])
             state.commit('num_players',data.max_player)
+            console.log('INIT sfter data '+data.max_player+' state '+state.getters['num_players'])
             state.commit('duration',data.duration)
             state.commit('shops',data.shops)
             resolve()
@@ -93,6 +110,5 @@ export function setCenter(state, data){
             state.commit('gps',data)
             resolve()
         },1000)
-    })
-    
+    })   
 }
