@@ -43,17 +43,31 @@ public class ShopPersist implements PersistenceLayer{
         return shop.getId();
     }
 
+    /**
+     * Function gets all shops from the database
+     * @return all shops from the database
+     */
     @Override
     public List<Object> getAll() {
         Query query = em.createQuery("SELECT s FROM Shop s");
         return query.getResultList();
     }
 
+    /**
+     * Function gets all shops which game id is equal to given
+     * @param game object which should be referred in selected games
+     * @return all games which have equal game id as given
+     */
     public List<Shop> getAllById(Game game) {
         Query query = em.createQuery("SELECT s FROM Shop s WHERE s.game = " + game.getId());
         return query.getResultList();
     }
 
+    /**
+     * Function gets all shops which game id is equal to given but the param is only long, not object
+     * @param gameId long number which represents game id
+     * @return all games which have equal game id as given
+     */
     public List<Shop> getAllById(Long gameId) {
 //        Query query = em.createQuery("SELECT s.id as id, s.name as name, s.latitude as latitude, s.longitude as longitude FROM Shop s WHERE s.game = " + gameId);
         Query query = em.createQuery("SELECT s FROM Shop s WHERE s.game = " + gameId);

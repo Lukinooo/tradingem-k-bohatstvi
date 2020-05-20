@@ -33,6 +33,10 @@ public class PriceCategoryPersist implements PersistenceLayer {
         return null;
     }
 
+    /**
+     * Function gets all price categories from our postgres database
+     * @return all price categories from database
+     */
     @Override
     public List<Object> getAll() {
         Query query = em.createQuery("SELECT pc FROM PriceCategory pc");
