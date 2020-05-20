@@ -140,6 +140,9 @@ public class ShopManager {
         ProductPersistence productPersistence = new ProductPersistence(em);
         Product product = (Product) productPersistence.get(Long.parseLong(productId));
         Float price = gameMechanic.buyProduct(gameId, playerId, shopId, productId, product.getName());
+        if (price == (float) 0.0) {
+            return "0";
+        }
 
         if (gameMechanic.checkFinancial(gameId, player, price)) {
 
@@ -157,8 +160,12 @@ public class ShopManager {
             money -= price;
 
             player = playerManager.updatePlayerScore(gameId, playerId, money);
+
+            return String.valueOf(money);
         }
-        return "";
+        else {
+            return "0";
+        }
     }
 
     public String sellProduct(String gameId, String playerId, String shopId, String productId) {
@@ -187,8 +194,11 @@ public class ShopManager {
             money += price;
 
             player = playerManager.updatePlayerScore(gameId, playerId, money);
-        }
 
-        return "playerMoney";
+            return String.valueOf(money);
+        }
+        else {
+            return "0";
+        }
     }
 }
