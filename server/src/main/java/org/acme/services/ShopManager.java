@@ -15,6 +15,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import redis.clients.jedis.Jedis;
 
 import javax.persistence.EntityManager;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class ShopManager {
@@ -94,20 +95,11 @@ public class ShopManager {
         return formated;
     }
 
-    // TODO (implement Lukas or Matej)
-    public Shop getShop(String gameId, String shopId) {
-        Jedis jedis = new Jedis("localhost", 6379);
-        return null;
-    }
-
-    // TODO (implement Lukas or Matej)
     public List getAllShop(String gameId) {
         ShopPersist shopPersist = new ShopPersist(em);
         List<Shop> shops = shopPersist.getAllById(Long.parseLong(gameId));
         return shops;
     }
-
-    // TODO implement Set product price in shop by ProductId, ShopId, Price (implement Lukas)
 
     public void initializeProducts(Game game, int initialCount) {
         ShopPersist shopPersist = new ShopPersist(em);
@@ -119,16 +111,28 @@ public class ShopManager {
         Random rand = new Random();
 
         for (Shop shop : shops) {
-            for (Object product : products) {
-                if ((rand.nextInt(100) & 1) == 1) {
-                    Product prod = (Product) product;
+            Set<Integer> indexes = randomGenerated(initialCount, products.size());
 
-                    int price = (int) (rand.nextInt((int) ((prod.getPriceCategory().getMax_price() - prod.getPriceCategory().getMin_price()) + 1)) + prod.getPriceCategory().getMin_price());
+            for (Integer index : indexes) {
+                Product prod = (Product) products.get(index);
 
-                    jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()) + ":" + String.valueOf(prod.getName()), prod.getPriceCategory().getId() + ":" + price + ":" + initialCount);
-                }
+                int price = (int) (rand.nextInt((int) ((prod.getPriceCategory().getMax_price() - prod.getPriceCategory().getMin_price()) + 1)) + prod.getPriceCategory().getMin_price());
+
+                jedis.hset("obchod:" + shop.getId() + ":produkty", String.valueOf(prod.getId()) + ":" + String.valueOf(prod.getName()), prod.getPriceCategory().getId() + ":" + price + ":" + initialCount);
             }
         }
+    }
+
+    public Set randomGenerated(int count, int range) {
+        Random rand = new Random();
+        Set<Integer> linkedHashSet = new LinkedHashSet<>();
+        linkedHashSet.size();
+
+        while (linkedHashSet.size() != count){
+            int n = rand.nextInt(range);
+            linkedHashSet.add(n);
+        }
+        return linkedHashSet;
     }
 
     public String buyProduct(String gameId, String playerId, String shopId, String productId) {
@@ -140,6 +144,9 @@ public class ShopManager {
         ProductPersistence productPersistence = new ProductPersistence(em);
         Product product = (Product) productPersistence.get(Long.parseLong(productId));
         Float price = gameMechanic.buyProduct(gameId, playerId, shopId, productId, product.getName());
+        if (price == (float) 0.0) {
+            return "0";
+        }
 
         if (gameMechanic.checkFinancial(gameId, player, price)) {
 
@@ -157,8 +164,12 @@ public class ShopManager {
             money -= price;
 
             player = playerManager.updatePlayerScore(gameId, playerId, money);
+
+            return String.valueOf(money);
         }
-        return "";
+        else {
+            return "0";
+        }
     }
 
     public String sellProduct(String gameId, String playerId, String shopId, String productId) {
@@ -187,8 +198,11 @@ public class ShopManager {
             money += price;
 
             player = playerManager.updatePlayerScore(gameId, playerId, money);
-        }
 
-        return "playerMoney";
+            return String.valueOf(money);
+        }
+        else {
+            return "0";
+        }
     }
 }

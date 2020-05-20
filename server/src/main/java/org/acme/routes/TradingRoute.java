@@ -51,27 +51,6 @@ public class TradingRoute {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("get-shop")
-    @Transactional
-    public String getShop() {
-        String gameId = request.getParam("game_id");
-        String shopId = request.getParam("shop_id");
-
-
-        ShopManager shopManager = new ShopManager(em);
-        Shop shop = shopManager.getShop(gameId, shopId);
-
-        String result = null;
-        try {
-            result = mapper.writeValueAsString(shop);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
     @Path("get-shop-products")
     @Transactional
     public String getShopProducts() {
@@ -83,7 +62,6 @@ public class TradingRoute {
         return result;
     }
 
-    // TODO buy product by game product shop player (check account) (implement Lukas)
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("buy-product")
@@ -106,7 +84,6 @@ public class TradingRoute {
         return result;
     }
 
-    // TODO sell product by game product shop player (check account) (implement Lukas)
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("sell-product")

@@ -1,12 +1,9 @@
 package org.acme.routes;
 
 import io.vertx.core.http.HttpServerRequest;
-import org.acme.configs.GameConfig;
 import org.acme.models.Player;
 import org.acme.services.PlayerManager;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jboss.resteasy.specimpl.MultivaluedTreeMap;
-import redis.clients.jedis.Tuple;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -16,8 +13,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.util.*;
+import java.util.logging.Logger;
 
 @Path("/")
 public class PlayersRoute {
@@ -26,6 +22,7 @@ public class PlayersRoute {
     public static ObjectMapper mapper = new ObjectMapper();
     @Context
     HttpServerRequest request;
+
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -54,8 +51,6 @@ public class PlayersRoute {
 
         PlayerManager playerManager = new PlayerManager(em);
         String result = playerManager.getAllPlayers(gameId);
-        // TODO return as JSON - DONE snad, neviem uplne
-
 
         return result;
     }
